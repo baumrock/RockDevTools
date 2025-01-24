@@ -16,32 +16,12 @@ You might wonder why I started developing a module that has similar feature as o
 
 ## Setup
 
-To enable the module you have to add the following line to your `site/config-local.php`:
+First, install the module like any other ProcessWire module.
+
+Then, to enable the module, you have to add the following line to your `site/config-local.php`:
 
 ```php
 $config->rockdevtools = true;
 ```
 
-## Minify
-
-A common need during development is to minify JS, LESS and CSS files. The module provides a simple way to do that:
-
-```php
-if($config->rockdevtools) {
-  // minify all JS, LESS and CSS files in the /src folder
-  // and write them to the /dst folder
-  rockdevtools()->minify(__DIR__ . '/src', __DIR__ . '/dst');
-}
-```
-
-RockDevTools will only minify files that are newer than the destination file.
-
-## Debug
-
-When working on JS/CSS assets it can sometimes be useful to recreate the minified files even if they are not newer than the destination file. To do that you can set the `debug` config option to `true`:
-
-```php
-rockdevtools()->debug = true;
-```
-
-This will force RockDevTools to recreate all asset files even if no changes have been made.
+NOTE: If that config setting is not set, the module will not do anything! This is by design to keep the footprint of the module as small as possible. On the production site it is intended to be disabled!
