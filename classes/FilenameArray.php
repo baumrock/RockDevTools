@@ -19,6 +19,24 @@ class FilenameArray extends ProcessWireFilenameArray
     return parent::add($filename);
   }
 
+  /**
+   * Add all files matching the glob to the array.
+   *
+   * Usage:
+   * rockdevtools()->less()->addAll('/site/templates/src/*.less')...
+   *
+   * @param string $glob
+   * @return LessArray
+   * @throws WireException
+   * @throws WirePermissionException
+   */
+  public function addAll(string $glob): self
+  {
+    $glob = rockdevtools()->toPath($glob);
+    foreach (glob($glob) as $file) $this->add($file);
+    return $this;
+  }
+
   public function append($filename)
   {
     $filename = rockdevtools()->toPath($filename);

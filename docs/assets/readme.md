@@ -17,7 +17,7 @@ if ($config->rockdevtools) {
   $devtools->assets()
     ->less()
     ->add('/site/templates/uikit/src/less/uikit.theme.less')
-    ->add('/site/templates/styles/_custom.less')
+    ->addAll('/site/templates/src/*.less') // glob example
     ->save('/site/templates/src/uikit.css');
 
   // merge and minify css files
