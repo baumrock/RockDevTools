@@ -65,7 +65,7 @@ Often a module needs more than one CSS/JS file, so RockDevTools provides a singl
 if($config->rockdevtools) {
   // minify all JS, LESS and CSS files in the /src folder
   // and write them to the /dst folder
-  rockdevtools()->minify(
+  rockdevtools()->assets()->minify(
     __DIR__ . '/src',
     __DIR__ . '/dst',
   );
