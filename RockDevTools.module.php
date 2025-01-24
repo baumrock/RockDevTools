@@ -93,8 +93,8 @@ class RockDevTools extends WireData implements Module
     string $src,
     string $dst,
   ): self {
-    $src = rtrim(Paths::normalizeSeparators($src), '/');
-    $dst = rtrim(Paths::normalizeSeparators($dst), '/');
+    $src = $this->toPath($src);
+    $dst = $this->toPath($dst);
 
     // if $src is a folder minify all files in it
     if (is_dir($src)) {

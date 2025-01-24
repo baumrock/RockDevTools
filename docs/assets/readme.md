@@ -68,7 +68,6 @@ if($config->rockdevtools) {
   rockdevtools()->minify(
     __DIR__ . '/src',
     __DIR__ . '/dst',
-    depth: 3,
   );
 }
 ```
