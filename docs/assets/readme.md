@@ -17,14 +17,14 @@ if ($config->rockdevtools) {
   $devtools->assets()
     ->less()
     ->add('/site/templates/uikit/src/less/uikit.theme.less')
-    ->addAll('/site/templates/src/*.less') // glob example
-    ->save('/site/templates/src/uikit.css');
+    ->addAll('/site/templates/src/*.less')
+    ->save('/site/templates/src/.styles.css');
 
   // merge and minify css files
   $devtools->assets()
     ->css()
-    ->add('/site/templates/src/uikit.css')
-    ->add('/site/templates/src/tailwind.css')
+    ->add('/site/templates/src/.styles.css')
+    ->add('/site/templates/src/.tailwind.css')
     ->save('/site/templates/dst/styles.min.css');
 
   // merge and minify JS files
