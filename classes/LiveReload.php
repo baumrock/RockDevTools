@@ -20,7 +20,10 @@ class LiveReload extends Wire
   {
     $blueScreen = Debugger::getBlueScreen();
     $blueScreen->addPanel(function () {
-      return ['tab' => 'LiveReload', 'panel' => 'RockDevTools LiveReload is active' . $this->scriptTag()];
+      return [
+        'tab' => 'LiveReload',
+        'panel' => 'RockDevTools LiveReload is active' . $this->scriptTag(),
+      ];
     });
   }
 
