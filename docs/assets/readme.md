@@ -17,7 +17,7 @@ if ($config->rockdevtools) {
   $devtools->assets()
     ->less()
     ->add('/site/templates/uikit/src/less/uikit.theme.less')
-    ->addAll('/site/templates/src/*.less')
+    ->add('/site/templates/src/*.less')
     ->save('/site/templates/src/.styles.css');
 
   // merge and minify css files
@@ -45,22 +45,35 @@ In your main markup file you can include those minified files like this:
 
 Note that we are using the `versionUrl` function to add a cache busting string to the URL to make sure that the browser always fetches the latest version of the file and does not use a cached version, which can be a problem when working on development machines as you might see an outdated version of the file.
 
-## addAll()
+## add()
 
-The `addAll()` method will automatically add all files in a folder to the assets array. It also supports recursive search, which PHP's `glob()` function does not support by default. The syntax is as follows:
+Add a file to the FilenameArray. This method is versatile and supports both individual files and glob patterns:
 
 ```php
-$devtools->assets()
-  ->less()
-  ->addAll(
-    // glob pattern
-    '/site/templates/RockPageBuilder/**.less',
-    // max depth for recursive search
-    // default = 3
-    2,
-  )
-  ...
+// Add a single file
+$array->add('/site/templates/styles.css');
+
+// Add multiple files using a glob pattern
+// This will add all files in the /site/templates/ directory (not recursively)
+$array->add('/site/templates/*.css');
+
+// Add files recursively using **
+// This will add all files in the /site/templates/ directory and its subdirectories (default depth 3)
+$array->add(
+  // pattern
+  '/site/templates/**.css',
+  // depth
+  5,
+);
 ```
+
+### Features
+
+- Supports individual files and glob patterns
+- Automatically handles recursive file matching with `**` pattern
+- Ensures paths are properly formatted within the ProcessWire root
+- Returns `$this` for method chaining
+- If a glob pattern is detected (contains `*`), it automatically uses `addAll()` internally
 
 ## Minify Folder
 
@@ -109,8 +122,8 @@ Another helpful feature is to dump the list of added files to the TracyDebugger 
 $devtools->assets()
   ->less()
   ->add('/site/templates/uikit/src/less/uikit.theme.less')
-  ->addAll('/site/templates/src/*.less')
-  ->addAll('/site/templates/RockPageBuilder/**/*.less')
+  ->add('/site/templates/src/*.less')
+  ->add('/site/templates/RockPageBuilder/**/*.less')
 
   // dump the list of added files to the TracyDebugger bar
   ->bd()
