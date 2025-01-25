@@ -45,6 +45,23 @@ In your main markup file you can include those minified files like this:
 
 Note that we are using the `versionUrl` function to add a cache busting string to the URL to make sure that the browser always fetches the latest version of the file and does not use a cached version, which can be a problem when working on development machines as you might see an outdated version of the file.
 
+## addAll()
+
+The `addAll()` method will automatically add all files in a folder to the assets array. It also supports recursive search, which PHP's `glob()` function does not support by default. The syntax is as follows:
+
+```php
+$devtools->assets()
+  ->less()
+  ->addAll(
+    // glob pattern
+    '/site/templates/RockPageBuilder/**.less',
+    // max depth for recursive search
+    // default = 3
+    2,
+  )
+  ...
+```
+
 ## Minify Folder
 
 When developing ProcessWire modules I like to write my CSS as LESS, because it's very easy to namespace my classes:
@@ -76,7 +93,7 @@ RockDevTools will only minify files that are newer than the destination file.
 
 Note that this will NOT merge files to a single file as this feature is intended for backend development.
 
-## Debug
+## Debugging
 
 When working on JS/CSS assets it can sometimes be useful to recreate the minified files even if they are not newer than the destination file. To do that you can set the `debug` config option to `true`:
 
@@ -85,3 +102,18 @@ rockdevtools()->debug = true;
 ```
 
 This will force RockDevTools to recreate all asset files even if no changes have been made.
+
+Another helpful feature is to dump the list of added files to the TracyDebugger bar:
+
+```php
+$devtools->assets()
+  ->less()
+  ->add('/site/templates/uikit/src/less/uikit.theme.less')
+  ->addAll('/site/templates/src/*.less')
+  ->addAll('/site/templates/RockPageBuilder/**/*.less')
+
+  // dump the list of added files to the TracyDebugger bar
+  ->bd()
+
+  ->save('/site/templates/src/.styles.css');
+```

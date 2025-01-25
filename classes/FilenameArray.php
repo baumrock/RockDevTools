@@ -15,6 +15,7 @@ class FilenameArray extends ProcessWireFilenameArray
 {
   public function add($filename)
   {
+    if (str_contains($filename, '*')) return $this->addAll($filename);
     $filename = rockdevtools()->toPath($filename);
     return parent::add($filename);
   }
@@ -22,18 +23,37 @@ class FilenameArray extends ProcessWireFilenameArray
   /**
    * Add all files matching the glob to the array.
    *
+   * Supports ** for recursive globbing!
+   *
    * Usage:
-   * rockdevtools()->less()->addAll('/site/templates/src/*.less')...
+   * rockdevtools()->less()->addAll('/site/templates/src/*.less')
+   * rockdevtools()->less()->addAll('/site/templates/RockPageBuilder/**\/*.less')
    *
    * @param string $glob
    * @return LessArray
    * @throws WireException
    * @throws WirePermissionException
    */
-  public function addAll(string $glob): self
+  public function addAll(string $glob, int $levels = 3): self
   {
     $glob = rockdevtools()->toPath($glob);
-    foreach (glob($glob) as $file) $this->add($file);
+
+    // if path contains ** we use brace expansion to find recursively
+    $pattern = '';
+    if (strpos($glob, '**') !== false) {
+      $pattern = '{';
+      // build a pattern like this:
+      // /var/www/html/site/templates/RockPageBuilder/{,*,*/*,*/*/*}/*.less
+      for ($i = 1; $i <= $levels; $i++) {
+        $pattern .= rtrim(str_repeat('*/', $i), '/');
+        $pattern .= ',';
+      }
+      $pattern = rtrim($pattern, ',');
+      $pattern .= '}';
+      $glob = str_replace('**', $pattern, $glob);
+    }
+
+    foreach (glob($glob, GLOB_BRACE) as $file) $this->add($file);
     return $this;
   }
 
@@ -41,6 +61,18 @@ class FilenameArray extends ProcessWireFilenameArray
   {
     $filename = rockdevtools()->toPath($filename);
     return parent::append($filename);
+  }
+
+  /**
+   * Log current list of added files to the Tracy Debug Bar
+   */
+  public function bd(): self
+  {
+    try {
+      bd($this->data);
+    } catch (\Throwable $th) {
+    }
+    return $this;
   }
 
   /**
@@ -104,6 +136,11 @@ class FilenameArray extends ProcessWireFilenameArray
     return parent::prepend($filename);
   }
 
+  public function remove($glob): self
+  {
+    return $this;
+  }
+
   /**
    * Generic save method that all asset types use. It will save a reference of
    * the filelist to cache to keep track of added/removed files.
@@ -139,7 +176,7 @@ class FilenameArray extends ProcessWireFilenameArray
 
   public function toArray(): array
   {
-    return (array)$this->data;
+    return $this->data;
   }
 
   public function updateFilesListHash(string $dstFile): void

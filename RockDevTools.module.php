@@ -3,6 +3,7 @@
 namespace ProcessWire;
 
 use RockDevTools\Assets;
+use RockDevTools\LiveReload;
 
 function rockdevtools(): RockDevTools
 {
@@ -17,15 +18,39 @@ function rockdevtools(): RockDevTools
 require_once __DIR__ . '/vendor/autoload.php';
 class RockDevTools extends WireData implements Module
 {
+  public $livereload;
+
+  public function __construct()
+  {
+    // early exit if not enabled to keep the footprint as low as possible
+    if (!wire()->config->rockdevtools) return;
+
+    // add classloader and load livereload
+    wire()->classLoader->addNamespace('RockDevTools', __DIR__ . '/classes');
+    $this->livereload = new LiveReload();
+  }
+
+  public function __debugInfo()
+  {
+    return [
+      'livereload' => $this->livereload->filesToWatch(),
+    ];
+  }
+
   public function init()
   {
     // early exit if not enabled to keep the footprint as low as possible
     if (!wire()->config->rockdevtools) return;
 
-    wire()->classLoader->addNamespace('RockDevTools', __DIR__ . '/classes');
+    // minify assets
+    $this->assets()->minify(__DIR__ . '/src', __DIR__ . '/dst');
+
+    // add panel to support livereload on tracy blue screen
+    $this->livereload->addBlueScreenPanel();
 
     // hooks
     wire()->addHookAfter('Modules::refresh', $this, 'resetCache');
+    wire()->addHookAfter('Page::render', $this->livereload, 'addLiveReloadMarkup');
   }
 
   public function assets(): Assets
