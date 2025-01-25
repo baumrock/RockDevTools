@@ -36,24 +36,7 @@ class FilenameArray extends ProcessWireFilenameArray
    */
   public function addAll(string $glob, int $levels = 3): self
   {
-    $glob = rockdevtools()->toPath($glob);
-
-    // if path contains ** we use brace expansion to find recursively
-    $pattern = '';
-    if (strpos($glob, '**') !== false) {
-      $pattern = '{';
-      // build a pattern like this:
-      // /var/www/html/site/templates/RockPageBuilder/{,*,*/*,*/*/*}/*.less
-      for ($i = 1; $i <= $levels; $i++) {
-        $pattern .= rtrim(str_repeat('*/', $i), '/');
-        $pattern .= ',';
-      }
-      $pattern = rtrim($pattern, ',');
-      $pattern .= '}';
-      $glob = str_replace('**', $pattern, $glob);
-    }
-
-    foreach (glob($glob, GLOB_BRACE) as $file) $this->add($file);
+    foreach ($this->glob($glob, $levels) as $file) $this->add($file);
     return $this;
   }
 
@@ -101,6 +84,36 @@ class FilenameArray extends ProcessWireFilenameArray
   }
 
   /**
+   * Get list of files by glob pattern
+   *
+   * This also supports ** for recursive globbing!
+   *
+   * @param string $pattern
+   * @param int $levels
+   * @return array
+   */
+  public function glob(string $pattern, int $levels = 3): array
+  {
+    $pattern = rockdevtools()->toPath($pattern);
+
+    // if path contains ** we use brace expansion to find recursively
+    $glob = '';
+    if (strpos($pattern, '**') !== false) {
+      $glob = '{';
+      // build a pattern like this:
+      // /var/www/html/site/templates/RockPageBuilder/{,*,*/*,*/*/*}/*.less
+      for ($i = 1; $i <= $levels; $i++) {
+        $glob .= rtrim(str_repeat('*/', $i), '/');
+        $glob .= ',';
+      }
+      $glob = rtrim($glob, ',');
+      $glob .= '}';
+      $pattern = str_replace('**', $glob, $pattern);
+    }
+    return glob($pattern, GLOB_BRACE);
+  }
+
+  /**
    * Does the current list of files has any changes? This includes both
    * changed files or a changed list of files (added/removed files).
    *
@@ -136,8 +149,18 @@ class FilenameArray extends ProcessWireFilenameArray
     return parent::prepend($filename);
   }
 
-  public function remove($glob): self
+  /**
+   * Remove file or files (glob pattern) from the list
+   * @param string $file
+   */
+  public function remove($file): self
   {
+    if (str_contains($file, '*')) {
+      $file = $this->glob($file);
+      foreach ($file as $f) $this->remove($f);
+      return $this;
+    }
+    parent::remove($file);
     return $this;
   }
 
