@@ -2,6 +2,11 @@
 
 namespace RockDevTools;
 
+/**
+ * List of files to watch for changes
+ * use bd(rockdevtools()->livereload->filesToWatch()) to inspect
+ */
+
 $files = (new FilenameArray())
   // watch files in root folder
   ->add('*.*')
