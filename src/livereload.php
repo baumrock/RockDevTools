@@ -13,4 +13,5 @@ $files = (new FilenameArray())
   ->add('/site/templates/**.latte', 6)
   // watch all assets in /site/modules
   ->add('/site/modules/**.{css,js,less,php,latte}', 4)
+  // do not watch uikit files
   ->remove('/site/templates/uikit/**.*');
