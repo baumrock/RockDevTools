@@ -11,6 +11,8 @@ use function ProcessWire\wire;
 
 class LiveReload extends Wire
 {
+  private $watchedFiles;
+
   public function __construct()
   {
     wire()->addHookBefore('Session::init', $this, 'addSSE');
@@ -47,10 +49,11 @@ class LiveReload extends Wire
 
   public function filesToWatch(): array
   {
+    if ($this->watchedFiles) return $this->watchedFiles;
     require dirname(__DIR__) . '/src/livereload.php';
     $configfile = wire()->config->paths->site . 'config-livereload.php';
     if (is_file($configfile)) require $configfile;
-    return $files->toArray();
+    return $this->watchedFiles = $files->toArray();
   }
 
   public function findModifiedFile(int $since): string|false
