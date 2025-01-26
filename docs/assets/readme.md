@@ -39,11 +39,18 @@ if ($config->rockdevtools) {
 In your main markup file you can include those minified files like this:
 
 ```latte
-<link rel="stylesheet" href="{wire()->config->versionUrl('/site/templates/dst/styles.min.css')}" />
-<script defer src="{wire()->config->versionUrl('/site/templates/dst/scripts.min.js')}"></script>
+{rockfrontend()->styleTag('/site/templates/dst/styles.min.css')|noescape}
+{rockfrontend()->scriptTag('/site/templates/dst/scripts.min.js', 'defer')|noescape}
 ```
 
-Note that we are using the `versionUrl` function to add a cache busting string to the URL to make sure that the browser always fetches the latest version of the file and does not use a cached version, which can be a problem when working on development machines as you might see an outdated version of the file.
+Which will output something like this:
+
+```html
+<link rel="stylesheet" href="/site/templates/dst/styles.min.css?akd84" />
+<script src="/site/templates/dst/scripts.min.js?vur4s" defer></script>
+```
+
+Note that we are automatically adding a cache busting string to the URL to make sure that the browser always fetches the latest version of the file and does not use a cached version, which can be a problem when working on development machines as you might see an outdated version of the file.
 
 ## add()
 
