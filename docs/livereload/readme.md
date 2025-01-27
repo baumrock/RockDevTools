@@ -4,24 +4,22 @@ The LiveReload module provides automatic browser refresh functionality when file
 
 ## Configuration
 
-### Default Configuration
+### Watched Files
 
-The default configuration watches several key directories and file types:
+RockDevTools uses Nette's File Finder to find files to watch. The default configuration at the moment of writing this documentation watches the following files:
 
 ```php
-$files = (new FilenameArray())
-  // Root folder files
-  ->add('*.*')
-  // PHP files in /site folder
-  ->add('/site/*.php')
-  // Template files (recursive, 4 levels deep)
-  ->add('/site/templates/**.{css,js,less,php}', 4)
-  // Latte template files (recursive, 6 levels deep)
-  ->add('/site/templates/**.latte', 6)
-  // Module assets
-  ->add('/site/modules/**.{css,js,less,php,latte}', 4)
-  // Exclude uikit files
-  ->remove('/site/templates/uikit/**.*');
+$files = Finder::findFiles(['*.php', '*.js', '*.css', '*.latte', '*.less'])
+  ->from(wire()->config->paths->site)
+  ->exclude('*/cache/*')
+  ->exclude('*/lib/*')
+  ->exclude('*/dist/*')
+  ->exclude('*/dst/*')
+  ->exclude('*/build/*')
+  ->exclude('*/uikit/src/*')
+  ->exclude('*/TracyDebugger/tracy-*')
+  ->exclude('*/TracyDebugger/scripts/*')
+  ->exclude('*/vendor/*');
 ```
 
 ### Custom Configuration
@@ -31,40 +29,7 @@ You can create a custom configuration file at `site/config-livereload.php`. This
 - Remove files/patterns from being watched
 - Override the default configuration entirely
 
-Example:
-
-```php
-<?php
-$files->add('path/to/file.php');
-$files->remove('/site/foo/bar/**.*');
-```
-
-## Methods
-
-### add()
-
-Add files or patterns to watch:
-
-```php
-// Add a single file
-$files->add('path/to/file.php');
-
-// Add using glob pattern (recursive)
-$files->add('/site/templates/**.css', 4); // Watch 4 levels deep
-$files->add('/site/modules/**.{js,php}', 6); // Watch multiple extensions
-```
-
-### remove()
-
-Remove files or patterns from being watched:
-
-```php
-// Remove a single file
-$files->remove('path/to/file.php');
-
-// Remove using glob pattern
-$files->remove('/site/templates/uikit/**.*'); // Remove all uikit files
-```
+The `$finder` object from above will be available as `$finder` in the custom configuration file. See the nette docs how to use the finder: https://doc.nette.org/en/utils/finder
 
 ## Advanced Usage
 

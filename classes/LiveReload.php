@@ -2,6 +2,7 @@
 
 namespace RockDevTools;
 
+use Nette\Utils\FileInfo;
 use ProcessWire\HookEvent;
 use ProcessWire\Wire;
 use Tracy\Debugger;
@@ -53,7 +54,12 @@ class LiveReload extends Wire
     require dirname(__DIR__) . '/src/livereload.php';
     $configfile = wire()->config->paths->site . 'config-livereload.php';
     if (is_file($configfile)) require $configfile;
-    return $this->watchedFiles = $files->toArray();
+    $arr = [];
+    foreach ($files->collect() as $file) {
+      /** @var FileInfo $file */
+      $arr[] = (string)$file;
+    }
+    return $this->watchedFiles = $arr;
   }
 
   public function findModifiedFile(int $since): string|false
