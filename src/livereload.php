@@ -12,6 +12,8 @@ $files = (new FilenameArray())
   ->add('*.*')
   // watch files in /site folder
   ->add('/site/*.php')
+  // watch custom page classes
+  ->add('/site/classes/*.php')
   // watch migrations
   ->add('/site/RockMigrations/**.*')
   // watch files in /site/templates folder recursively
