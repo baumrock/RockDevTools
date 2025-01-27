@@ -11,9 +11,18 @@ use function ProcessWire\wire;
  * use bd(rockdevtools()->livereload->filesToWatch()) to inspect
  */
 
-$files = Finder::findFiles(['*.php', '*.js', '*.css', '*.latte', '*.less'])
+$files = Finder::findFiles([
+  '*.php',
+  '*.js',
+  '*.css',
+  '*.latte',
+  '*.less',
+])
   ->from(wire()->config->paths->site)
-  ->exclude('*/cache/*')
+  ->exclude('assets/backups/*')
+  ->exclude('assets/cache/*')
+  ->exclude('assets/files/*')
+  ->exclude('assets/logs/*')
   ->exclude('*/lib/*')
   ->exclude('*/dist/*')
   ->exclude('*/dst/*')
