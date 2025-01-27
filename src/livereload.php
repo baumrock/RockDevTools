@@ -13,9 +13,11 @@ use function ProcessWire\wire;
 
 $files = Finder::findFiles([
   '*.php',
+  '*.module',
   '*.js',
   '*.css',
   '*.latte',
+  '*.twig',
   '*.less',
 ])
   ->from(wire()->config->paths->site)
