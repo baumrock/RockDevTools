@@ -13,9 +13,9 @@ use function ProcessWire\wire;
 
 class FilenameArray extends ProcessWireFilenameArray
 {
-  public function add($filename)
+  public function add($filename, int $levels = 3)
   {
-    if (str_contains($filename, '*')) return $this->addAll($filename);
+    if (str_contains($filename, '*')) return $this->addAll($filename, $levels);
     $filename = rockdevtools()->toPath($filename);
     return parent::add($filename);
   }
