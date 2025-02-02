@@ -1,4 +1,11 @@
-## 1.1.0 (2025-02-02)
+## [1.1.1](https://github.com/baumrock/RockDevTools/compare/v1.1.0...v1.1.1) (2025-02-02)
+
+
+### Bug Fixes
+
+* add missing levels support on ->add() ([66d5312](https://github.com/baumrock/RockDevTools/commit/66d5312cfb0a8445c96bb2f910c37b4f49f19b6e))
+
+## [1.1.0](https://github.com/baumrock/RockDevTools/compare/243a27b31886ea9cde69667316c76daae414dda9...v1.1.0) (2025-02-02)
 
 
 ### Features
