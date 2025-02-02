@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/baumrock/RockDevTools/compare/v1.1.1...v1.1.2) (2025-02-02)
+
+
+### Bug Fixes
+
+* add tracy bluescreen panel only if tracy is installed ([0edab66](https://github.com/baumrock/RockDevTools/commit/0edab668deaf6999bdd971de2c2583c20e5c9a09))
+
 ## [1.1.1](https://github.com/baumrock/RockDevTools/compare/v1.1.0...v1.1.1) (2025-02-02)
 
 
