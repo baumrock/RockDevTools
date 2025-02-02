@@ -21,6 +21,7 @@ class LiveReload extends Wire
 
   public function addBlueScreenPanel(): void
   {
+    if (!wire()->modules->isInstalled('TracyDebugger')) return;
     $blueScreen = Debugger::getBlueScreen();
     $blueScreen->addPanel(function () {
       return [
