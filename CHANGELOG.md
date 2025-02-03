@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/baumrock/RockDevTools/compare/v1.1.2...v1.1.3) (2025-02-03)
+
+
+### Bug Fixes
+
+* reload when a new file is created ([37f1800](https://github.com/baumrock/RockDevTools/commit/37f1800b0a68a0e521989dfa713e94e0f45a6330))
+
 ## [1.1.2](https://github.com/baumrock/RockDevTools/compare/v1.1.1...v1.1.2) (2025-02-02)
 
 
