@@ -4,6 +4,7 @@ namespace ProcessWire;
 
 use RockDevTools\Assets;
 use RockDevTools\LiveReload;
+use RockDevTools\RockCSS;
 
 function rockdevtools(): RockDevTools
 {
@@ -19,6 +20,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 class RockDevTools extends WireData implements Module
 {
   public $livereload;
+
+  private $rockcss = false;
 
   public function __construct()
   {
@@ -67,6 +70,15 @@ class RockDevTools extends WireData implements Module
   public function resetCache(HookEvent $event): void
   {
     wire()->cache->delete('rockdevtools-filenames-*');
+  }
+
+  /**
+   * @return RockCSS
+   */
+  public function rockcss()
+  {
+    if (!$this->rockcss) $this->rockcss = new RockCSS();
+    return $this->rockcss;
   }
 
   /**

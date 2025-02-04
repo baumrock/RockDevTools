@@ -4,21 +4,28 @@ namespace RockDevTools;
 
 use MatthiasMullie\Minify\CSS;
 
+use function ProcessWire\rockdevtools;
 use function ProcessWire\wire;
 
 class CssArray extends FilenameArray
 {
   public function saveCSS(string $to): void
   {
+    // first we merge all the css
+    $css = '';
+    foreach ($this as $file) $css .= @wire()->files->fileGetContents($file);
+
+    // then we compile rockcss features (grow/shrink/pxrem)
+    $css = rockdevtools()->rockcss()->compile($css);
+
+    // then write resulting css back to file
     if (str_ends_with($to, '.min.css')) {
-      // minify content
+      // minified
       $minifier = new CSS();
-      foreach ($this as $file) $minifier->add($file);
+      $minifier->add($css);
       $minifier->minify($to);
     } else {
-      // merge content
-      $css = '';
-      foreach ($this as $file) $css .= @wire()->files->fileGetContents($file);
+      // unminified
       wire()->files->filePutContents($to, $css);
     }
   }

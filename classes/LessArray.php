@@ -2,6 +2,9 @@
 
 namespace RockDevTools;
 
+use ProcessWire\Less;
+
+use function ProcessWire\rockdevtools;
 use function ProcessWire\wire;
 
 class LessArray extends FilenameArray
@@ -11,6 +14,8 @@ class LessArray extends FilenameArray
     /** @var Less $less */
     $less = wire()->modules->get('Less');
     foreach ($this as $file) $less->addFile($file);
-    $less->saveCss($dst);
+    $css = $less->getCss();
+    $css = rockdevtools()->rockcss()->compile($css);
+    wire()->files->filePutContents($dst, $css);
   }
 }
