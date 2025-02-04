@@ -1,3 +1,10 @@
+## [1.2.0](https://github.com/baumrock/RockDevTools/compare/v1.1.3...v1.2.0) (2025-02-04)
+
+
+### Features
+
+* add grow(), shrink() and pxrem features 😎 ([4120d15](https://github.com/baumrock/RockDevTools/commit/4120d15d9fe3bd5bdcaa7ed0e3bd7d66d99947fc))
+
 ## [1.1.3](https://github.com/baumrock/RockDevTools/compare/v1.1.2...v1.1.3) (2025-02-03)
 
 
