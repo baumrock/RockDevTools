@@ -1,4 +1,4 @@
-## Minify/Merge Site or Module Assets
+# Assets
 
 The module can be used to easily minify or merge JS, LESS and CSS assets of a site or a module.
 
