@@ -22,7 +22,6 @@ RockCSS is a powerful CSS extension that brings fluid typography and responsive 
 4. **Developer-Friendly**
    - Clean, readable syntax
    - Predictable output
-   - Easy to debug
 
 ## Usage
 
@@ -128,29 +127,13 @@ font-size: clamp(16px, 16px + 8 * ((100vw - 375px) / (1440 - 375)), 24px);
    - Consistent scaling across your project
    - Easy to update global scaling behavior
 
-## Best Practices
+## Support
 
-1. Use `grow()` for properties that should increase with screen size:
+You can not only use RockCSS syntax for font sizes but for any css property that should increase or decrease with screen size:
    - Font sizes
    - Margins and padding
    - Grid gaps
-
-2. Use `shrink()` for properties that should decrease with screen size:
-   - Hero image heights
-   - Sidebar widths
-   - Large spacings
-
-3. Keep your scale ranges reasonable:
-   - Don't scale too dramatically
-   - Consider readability at all sizes
-   - Test on real devices
-
-## Integration with RockFrontend
-
-RockCSS is seamlessly integrated with RockFrontend, making it a perfect companion for:
-- LESS/SCSS preprocessing
-- Asset compilation
-- Component-based development
+   - etc
 
 ## Conclusion
 
