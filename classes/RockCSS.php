@@ -47,8 +47,8 @@ class RockCSS extends Wire
         $match = array_map('trim', $match);
         $from = $match[1];
         $to = $match[2];
-        $breakpointMin = $match[3] ?? $this->min;
-        $breakpointMax = $match[4] ?? $this->max;
+        $breakpointMin = (int)($match[4] ?? $this->min);
+        $breakpointMax = (int)($match[6] ?? $this->max);
         $diff = (int)$to - (int)$from;
 
         $percent = "((100vw - {$breakpointMin}px) / ($breakpointMax - $breakpointMin))";
@@ -74,8 +74,8 @@ class RockCSS extends Wire
         $match = array_map('trim', $match);
         $to = $match[1];
         $from = $match[2];
-        $breakpointMin = $match[3] ?? $this->min;
-        $breakpointMax = $match[4] ?? $this->max;
+        $breakpointMin = (int)($match[4] ?? $this->min);
+        $breakpointMax = (int)($match[6] ?? $this->max);
         $diff = (int)$to - (int)$from;
 
         $percent = "((100vw - {$breakpointMin}px) / ($breakpointMax - $breakpointMin))";
