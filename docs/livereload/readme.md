@@ -2,6 +2,16 @@
 
 The LiveReload module provides automatic browser refresh functionality when files in your ProcessWire project are modified. It uses Server-Sent Events (SSE) to efficiently detect and respond to file changes.
 
+## Setup
+
+To use the livereload feature you need to enable the RockDevTools module from your config:
+
+```php
+$config->rockdevtools = true;
+```
+
+Note: Enable RockDevTools only on development! RockDevTools is designed to never ever run on production.
+
 ## Configuration
 
 ### Watched Files
