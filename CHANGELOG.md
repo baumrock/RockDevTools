@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/baumrock/RockDevTools/compare/v1.3.0...v1.3.1) (2025-02-20)
+
+
+### Bug Fixes
+
+* remove semicolon to support margin: x y syntax ([dfee1d6](https://github.com/baumrock/RockDevTools/commit/dfee1d6bbef09cf11c25f0c28bb129c1e5b5f3af))
+
 ## [1.3.0](https://github.com/baumrock/RockDevTools/compare/v1.2.0...v1.3.0) (2025-02-05)
 
 
@@ -30,11 +37,4 @@
 ### Bug Fixes
 
 * add tracy bluescreen panel only if tracy is installed ([0edab66](https://github.com/baumrock/RockDevTools/commit/0edab668deaf6999bdd971de2c2583c20e5c9a09))
-
-## [1.1.1](https://github.com/baumrock/RockDevTools/compare/v1.1.0...v1.1.1) (2025-02-02)
-
-
-### Bug Fixes
-
-* add missing levels support on ->add() ([66d5312](https://github.com/baumrock/RockDevTools/commit/66d5312cfb0a8445c96bb2f910c37b4f49f19b6e))
 
