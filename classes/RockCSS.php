@@ -41,7 +41,7 @@ class RockCSS extends Wire
   {
     if (!str_contains($css, 'grow(')) return $css;
     return preg_replace_callback(
-      "/grow\((.*?),(.*?)(,(.*?))?(,(.*?))?\);/",
+      "/grow\((.*?),(.*?)(,(.*?))?(,(.*?))?\)/",
       function ($match) {
         if (count($match) < 3) return false;
         $match = array_map('trim', $match);
@@ -52,7 +52,7 @@ class RockCSS extends Wire
         $diff = (int)$to - (int)$from;
 
         $percent = "((100vw - {$breakpointMin}px) / ($breakpointMax - $breakpointMin))";
-        $result = "clamp($from, $from + $diff * $percent, $to);";
+        $result = "clamp($from, $from + $diff * $percent, $to)";
         return $result;
       },
       $css
@@ -68,7 +68,7 @@ class RockCSS extends Wire
   {
     if (!str_contains($css, 'shrink(')) return $css;
     return preg_replace_callback(
-      "/shrink\((.*?),(.*?)(,(.*?))?(,(.*?))?\);/",
+      "/shrink\((.*?),(.*?)(,(.*?))?(,(.*?))?\)/",
       function ($match) {
         if (count($match) < 3) return false;
         $match = array_map('trim', $match);
@@ -79,7 +79,7 @@ class RockCSS extends Wire
         $diff = (int)$to - (int)$from;
 
         $percent = "((100vw - {$breakpointMin}px) / ($breakpointMax - $breakpointMin))";
-        $result = "clamp($from, $to - $diff * $percent, $to);";
+        $result = "clamp($from, $to - $diff * $percent, $to)";
         return $result;
       },
       $css
