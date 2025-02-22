@@ -17,9 +17,9 @@ class JsArray extends FilenameArray
       $minifier->minify($to);
     } else {
       // merge content
-      $css = '';
-      foreach ($this as $file) $css .= @wire()->files->fileGetContents($file);
-      wire()->files->filePutContents($to, $css);
+      $js = '';
+      foreach ($this as $file) $js .= @wire()->files->fileGetContents($file);
+      wire()->files->filePutContents($to, $js);
     }
   }
 }
