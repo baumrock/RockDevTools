@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/baumrock/RockDevTools/compare/v1.3.1...v1.3.2) (2025-02-23)
+
+
+### Bug Fixes
+
+* prevent double-minification of js assets ([d589763](https://github.com/baumrock/RockDevTools/commit/d589763979ccc05c10e35827f8603a0e20f25bd1))
+
 ## [1.3.1](https://github.com/baumrock/RockDevTools/compare/v1.3.0...v1.3.1) (2025-02-20)
 
 
@@ -30,11 +37,4 @@
 ### Bug Fixes
 
 * reload when a new file is created ([37f1800](https://github.com/baumrock/RockDevTools/commit/37f1800b0a68a0e521989dfa713e94e0f45a6330))
-
-## [1.1.2](https://github.com/baumrock/RockDevTools/compare/v1.1.1...v1.1.2) (2025-02-02)
-
-
-### Bug Fixes
-
-* add tracy bluescreen panel only if tracy is installed ([0edab66](https://github.com/baumrock/RockDevTools/commit/0edab668deaf6999bdd971de2c2583c20e5c9a09))
 
