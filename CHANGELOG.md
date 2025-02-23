@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/baumrock/RockDevTools/compare/v1.3.2...v1.3.3) (2025-02-23)
+
+
+### Bug Fixes
+
+* remove orphan line of minifier ([df90602](https://github.com/baumrock/RockDevTools/commit/df90602e110ea7b764a927072b160a3abe38d9cc))
+
 ## [1.3.2](https://github.com/baumrock/RockDevTools/compare/v1.3.1...v1.3.2) (2025-02-23)
 
 
@@ -30,11 +37,4 @@
 ### Features
 
 * add grow(), shrink() and pxrem features 😎 ([4120d15](https://github.com/baumrock/RockDevTools/commit/4120d15d9fe3bd5bdcaa7ed0e3bd7d66d99947fc))
-
-## [1.1.3](https://github.com/baumrock/RockDevTools/compare/v1.1.2...v1.1.3) (2025-02-03)
-
-
-### Bug Fixes
-
-* reload when a new file is created ([37f1800](https://github.com/baumrock/RockDevTools/commit/37f1800b0a68a0e521989dfa713e94e0f45a6330))
 
