@@ -24,7 +24,6 @@ class JsArray extends FilenameArray
           $js .= $minifier->minify();
         }
       }
-      $minifier->minify($to);
     } else {
       // merge content
       foreach ($this as $file) $js .= @wire()->files->fileGetContents($file);
