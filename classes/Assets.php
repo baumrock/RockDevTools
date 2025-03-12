@@ -33,6 +33,7 @@ class Assets extends Wire
 
     // change extension
     if (str_ends_with($src, '.less')) $dst = substr($dst, 0, -5) . '.min.css';
+    elseif (str_ends_with($src, '.scss')) $dst = substr($dst, 0, -5) . '.min.css';
     elseif (str_ends_with($src, '.js')) $dst = substr($dst, 0, -3) . '.min.js';
     elseif (str_ends_with($src, '.css')) $dst = substr($dst, 0, -4) . '.min.css';
 
@@ -72,6 +73,14 @@ class Assets extends Wire
     return new LessArray();
   }
 
+  public function scss(): ScssArray
+  {
+    if (!wire()->modules->get('Scss')) {
+      throw new WireException('Scss module not found');
+    }
+    return new ScssArray();
+  }
+
   /**
    * Parse and minify JS/LESS/CSS files and write them to $dst
    *
@@ -94,7 +103,7 @@ class Assets extends Wire
 
     // if $src is a folder minify all files in it
     if (is_dir($src)) {
-      foreach (glob($src . '/*.{js,less,css}', GLOB_BRACE) as $file) {
+      foreach (glob($src . '/*.{js,less,scss,css}', GLOB_BRACE) as $file) {
         $this->minify($file, $dst);
       }
       return $this;
@@ -143,6 +152,18 @@ class Assets extends Wire
     $less->saveCss($dstFile);
   }
 
+  private function minifyScss(
+    string $srcFile,
+    string $dstFile,
+  ): void {
+    if (!wire()->modules->get('Scss')) throw new WireException('Scss module not found');
+    /** @var Scss $scss */
+    $scss = wire()->modules->get('Scss');
+    $scss->setOption('compress', true); // minify
+    $scss->addFile($srcFile);
+    $scss->saveCss($dstFile);
+  }
+
   public function minifyFile(
     string $srcFile,
     string $dstFile,
@@ -153,6 +174,7 @@ class Assets extends Wire
 
     // create minified file based on extension
     if (str_ends_with($srcFile, '.less')) $this->minifyLess($srcFile, $dstFile);
+    elseif (str_ends_with($srcFile, '.scss')) $this->minifyScss($srcFile, $dstFile);
     elseif (str_ends_with($srcFile, '.js')) $this->minifyJS($srcFile, $dstFile);
     elseif (str_ends_with($srcFile, '.css')) $this->minifyCSS($srcFile, $dstFile);
   }
