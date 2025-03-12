@@ -189,6 +189,7 @@ class FilenameArray extends ProcessWireFilenameArray
     wire()->files->mkdir(dirname($dst), true);
 
     if ($this instanceof LessArray) $this->saveLESS($dst);
+    if ($this instanceof ScssArray) $this->saveSCSS($dst);
     if ($this instanceof CssArray) $this->saveCSS($dst);
     if ($this instanceof JsArray) $this->saveJS($dst);
 
