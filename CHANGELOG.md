@@ -1,3 +1,10 @@
+## [1.4.0](https://github.com/baumrock/RockDevTools/compare/v1.3.3...v1.4.0) (2025-03-12)
+
+
+### Features
+
+* bump version (add support for SCSS) ([635ba5c](https://github.com/baumrock/RockDevTools/commit/635ba5c2361395c9c0fcc810cb5bd3fddbe9b76e))
+
 ## [1.3.3](https://github.com/baumrock/RockDevTools/compare/v1.3.2...v1.3.3) (2025-02-23)
 
 
@@ -30,11 +37,4 @@
 ### Bug Fixes
 
 * custom breakpoints for grow/shrink not working ([3ac8c80](https://github.com/baumrock/RockDevTools/commit/3ac8c80a8dd37078c519d53e3ed95206272e06f9))
-
-## [1.2.0](https://github.com/baumrock/RockDevTools/compare/v1.1.3...v1.2.0) (2025-02-04)
-
-
-### Features
-
-* add grow(), shrink() and pxrem features 😎 ([4120d15](https://github.com/baumrock/RockDevTools/commit/4120d15d9fe3bd5bdcaa7ed0e3bd7d66d99947fc))
 
