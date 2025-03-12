@@ -41,6 +41,33 @@ You can create a custom configuration file at `site/config-livereload.php`. This
 
 The `$finder` object from above will be available as `$finder` in the custom configuration file. See the nette docs how to use the finder: https://doc.nette.org/en/utils/finder
 
+```php
+// site/config-livereload.php
+<?php
+
+namespace ProcessWire;
+
+// example how to exclude files/folders from already watched files
+// remove the site folder from the watched files
+$files->exclude('site/*');
+
+// example how to add files to the watched files array
+// add all markdown files from the root and below
+$files->append()
+  ->files('*.md')
+  ->from(wire()->config->paths->root);
+```
+
+### Debugging
+
+While working on adding/removing files from the list you might want to quickly see which files are currently watched. You can do this by adding the following code to your `site/ready.php` file:
+
+```php
+bd(rockdevtools()->livereload->filesToWatch());
+```
+
+This will dump the list of all watched files to the TracyDebugger debug bar.
+
 ## Advanced Usage
 
 ### Custom Actions
@@ -59,4 +86,3 @@ exec('npm run build');
 ```
 
 The file is executed automatically when changes are detected, before the browser refresh occurs. This ensures your compiled assets are up to date when the page reloads.
-
