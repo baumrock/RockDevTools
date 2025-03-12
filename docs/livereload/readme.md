@@ -39,7 +39,7 @@ You can create a custom configuration file at `site/config-livereload.php`. This
 - Remove files/patterns from being watched
 - Override the default configuration entirely
 
-The `$finder` object from above will be available as `$finder` in the custom configuration file. See the nette docs how to use the finder: https://doc.nette.org/en/utils/finder
+The `$files` object from above will be available as `$files` in the custom configuration file. See the nette docs how to use the finder: https://doc.nette.org/en/utils/finder
 
 ```php
 // site/config-livereload.php
