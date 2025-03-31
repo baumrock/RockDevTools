@@ -41,7 +41,7 @@ class ScssArray extends FilenameArray
       $source = $tmpFile;
     } else {
       // Only one file: use it as the source.
-      $source = $files[0];
+      $source = array_values($files)[0];
     }
 
     // Read the content of the source file (master or single file)
