@@ -7,6 +7,10 @@ The module can be used to easily minify or merge JS, LESS and CSS assets of a si
 To minify/merge site assets you can put something likethis in your '/site/templates/_init.php' file:
 
 ```php
+<?php
+// make sure you have set the ProcessWire namespace at the top of the file!
+namespace ProcessWire;
+
 if ($config->rockdevtools) {
   $devtools = rockdevtools();
 
