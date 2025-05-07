@@ -71,6 +71,13 @@ class LiveReload extends Wire
     return false;
   }
 
+  public function log(string $msg): void
+  {
+    wire()->log->save('livereload', $msg, [
+      'url' => 'LiveReload',
+    ]);
+  }
+
   public function loop(): void
   {
     // we dont want warnings in the stream
@@ -94,16 +101,13 @@ class LiveReload extends Wire
 
       // file changed
       if (!$executed && $file) {
-        wire()->log->save('livereload', "File changed: $file", [
-          'showURL' => false,
-          'showUser' => false,
-        ]);
+        $this->log("File changed: $file");
         $actionFile = wire()->config->paths->site . 'livereload.php';
         if (is_file($actionFile)) {
-          wire()->log->save('livereload', "Loading actionfile $actionFile");
+          $this->log("Loading actionfile $actionFile");
           include $actionFile;
         } else {
-          wire()->log->save('livereload', "No actionfile $actionFile");
+          $this->log("No actionfile $actionFile");
         }
         $executed = true;
       }
