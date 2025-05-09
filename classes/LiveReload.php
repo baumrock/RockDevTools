@@ -128,7 +128,7 @@ class LiveReload extends Wire
     }
   }
 
-  private function scriptTag(): string
+  public function scriptTag(): string
   {
     $src = wire()->config->urls(rockdevtools()) . 'dst/livereload.min.js';
     $src = wire()->config->versionUrl($src);
