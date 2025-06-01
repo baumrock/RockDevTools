@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/baumrock/RockDevTools/compare/v1.4.1...v1.4.2) (2025-06-01)
+
+
+### Bug Fixes
+
+* make scripttag public (for ajax endpoints) ([4042708](https://github.com/baumrock/RockDevTools/commit/4042708938aea6efa88c0a14373574eb3e00de25))
+
 ## [1.4.1](https://github.com/baumrock/RockDevTools/compare/v1.4.0...v1.4.1) (2025-03-31)
 
 
@@ -25,11 +32,4 @@
 ### Bug Fixes
 
 * prevent double-minification of js assets ([d589763](https://github.com/baumrock/RockDevTools/commit/d589763979ccc05c10e35827f8603a0e20f25bd1))
-
-## [1.3.1](https://github.com/baumrock/RockDevTools/compare/v1.3.0...v1.3.1) (2025-02-20)
-
-
-### Bug Fixes
-
-* remove semicolon to support margin: x y syntax ([dfee1d6](https://github.com/baumrock/RockDevTools/commit/dfee1d6bbef09cf11c25f0c28bb129c1e5b5f3af))
 
