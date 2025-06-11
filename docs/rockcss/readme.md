@@ -2,6 +2,8 @@
 
 RockCSS is a powerful CSS extension that brings fluid typography and responsive scaling to your ProcessWire projects with minimal effort. It introduces two groundbreaking functions - `grow()` and `shrink()` - that make responsive design intuitive and maintainable.
 
+> Note: As of 2025-06-11 I recommend to use RockFrontend for this feature! See the docs about the grow feature there!
+
 ## Why RockCSS is Great
 
 1. **Simplified Fluid Typography**
