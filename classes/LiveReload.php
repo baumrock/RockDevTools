@@ -4,6 +4,7 @@ namespace RockDevTools;
 
 use Nette\Utils\FileInfo;
 use ProcessWire\HookEvent;
+use ProcessWire\Page;
 use ProcessWire\Wire;
 use Tracy\Debugger;
 
@@ -29,10 +30,16 @@ class LiveReload extends Wire
     });
   }
 
+  public function ___addLiveReload(Page $p): bool
+  {
+    return true;
+  }
+
   protected function addLiveReloadMarkup(HookEvent $event): void
   {
     if (wire()->config->ajax) return;
     if (wire()->config->external) return;
+    if (!$this->addLiveReload($event->object)) return;
     $event->return .= $this->scriptTag();
   }
 

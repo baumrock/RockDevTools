@@ -14,6 +14,21 @@ Note: Enable RockDevTools only on development! RockDevTools is designed to never
 
 ## Configuration
 
+### Disabling Livereload for Specific Pages
+
+It might be the case that you want to disable LiveReload for specific pages (or the whole backend). This is how you can do it:
+
+```php
+// /site/ready.php
+wire()->addHookAfter(
+  'LiveReload::addLiveReload',
+  function (HookEvent $event) {
+    $page = $event->arguments(0);
+    if ($page->template == 'admin') $event->return = false;
+  }
+);
+```
+
 ### Watched Files
 
 RockDevTools uses Nette's File Finder to find files to watch. The default configuration at the moment of writing this documentation watches the following files:
