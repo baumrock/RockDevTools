@@ -8,12 +8,16 @@ use function ProcessWire\rockdevtools;
 
 class ScssArray extends FilenameArray
 {
-  public function saveSCSS(string $dst, string $style = 'compressed'): void
-  {
+  public function saveSCSS(
+    string $dst,
+    string $style = 'compressed',
+    bool $sourceMap = false,
+  ): void {
     /** @var Scss $scss */
     $scss = wire()->modules->get('Scss');
     $compiler = $scss->compiler();
     $compiler->setOutputStyle($style);
+    if ($sourceMap) $compiler->setSourceMap($compiler::SOURCE_MAP_INLINE);
 
     // Gather all unique import paths from the added files
     $importPaths = [];
