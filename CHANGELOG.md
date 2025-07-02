@@ -1,3 +1,11 @@
+## [1.5.0](https://github.com/baumrock/RockDevTools/compare/v1.4.2...v1.5.0) (2025-07-02)
+
+
+### Features
+
+* add hookable method to disable livereload via callback ([4e645b3](https://github.com/baumrock/RockDevTools/commit/4e645b36a2e37fd6c5e6eb03080a56184112bde5))
+* add sourceMap feature ([e4cf325](https://github.com/baumrock/RockDevTools/commit/e4cf3255b1725eb90ed1bd5dab0d105ddc121a82))
+
 ## [1.4.2](https://github.com/baumrock/RockDevTools/compare/v1.4.1...v1.4.2) (2025-06-01)
 
 
@@ -25,11 +33,4 @@
 ### Bug Fixes
 
 * remove orphan line of minifier ([df90602](https://github.com/baumrock/RockDevTools/commit/df90602e110ea7b764a927072b160a3abe38d9cc))
-
-## [1.3.2](https://github.com/baumrock/RockDevTools/compare/v1.3.1...v1.3.2) (2025-02-23)
-
-
-### Bug Fixes
-
-* prevent double-minification of js assets ([d589763](https://github.com/baumrock/RockDevTools/commit/d589763979ccc05c10e35827f8603a0e20f25bd1))
 
