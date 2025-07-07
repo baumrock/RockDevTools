@@ -13,6 +13,8 @@ use function ProcessWire\wire;
 
 class LiveReload extends Wire
 {
+  const param = 'rockdevtools-livereload';
+
   public function __construct()
   {
     wire()->addHookBefore('Session::init', $this, 'addSSE');
@@ -45,7 +47,8 @@ class LiveReload extends Wire
 
   protected function addSSE(HookEvent $event): void
   {
-    if (!str_ends_with((string)@$_GET['it'], 'rockdevtools-livereload')) return;
+    // early exit if not watching
+    if (!$this->watch()) return;
 
     // disable tracy for the SSE stream
     wire()->config->tracy = ['enabled' => false];
@@ -139,7 +142,7 @@ class LiveReload extends Wire
   {
     $src = wire()->config->urls(rockdevtools()) . 'dst/livereload.min.js';
     $src = wire()->config->versionUrl($src);
-    $url = wire()->config->urls->root . 'rockdevtools-livereload';
+    $url = wire()->config->urls->root . self::param;
     $force = (int)wire()->config->livereloadForce;
     return "<script
       src='$src'
@@ -159,9 +162,17 @@ class LiveReload extends Wire
     flush();
   }
 
-  public function watch(): void
+  public function watch(): bool
   {
-    if (!wire()->config->livereload) return;
-    if (!str_ends_with((string)@$_GET['it'], 'rockdevtools-livereload')) return;
+    if (!wire()->config->livereload) return false;
+    // see https://processwire.com/talk/topic/30997--
+    // using str_ends_with to support subfolder installations!
+    if (array_key_exists('REQUEST_URI', $_SERVER)) {
+      return str_ends_with($_SERVER['REQUEST_URI'], self::param);
+    }
+    if (array_key_exists('it', $_GET)) {
+      return str_ends_with($_GET['it'], self::param);
+    }
+    return false;
   }
 }
