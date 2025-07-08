@@ -13,6 +13,23 @@ use function ProcessWire\wire;
 
 class FilenameArray extends ProcessWireFilenameArray
 {
+
+  /**
+   * Add a single file or multiple files via glob pattern.
+   *
+   * Adding a single file:
+   * rockdevtools()->js()->add('/path/to/file.js')
+   *
+   * Adding all files in a folder including subfolders:
+   * rockdevtools()->js()->add('/path/to/folder/**.js')
+   *
+   * Limit the depth of the globbing:
+   * rockdevtools()->js()->add('/path/to/folder/**', 2)
+   *
+   * @param string $filename
+   * @param int $levels
+   * @return $this
+   */
   public function add($filename, int $levels = 3)
   {
     if (str_contains($filename, '*')) return $this->addAll($filename, $levels);
@@ -25,9 +42,7 @@ class FilenameArray extends ProcessWireFilenameArray
    *
    * Supports ** for recursive globbing!
    *
-   * Usage:
-   * rockdevtools()->less()->addAll('/site/templates/src/*.less')
-   * rockdevtools()->less()->addAll('/site/templates/RockPageBuilder/**\/*.less')
+   * See docs for add() for more details.
    *
    * @param string $glob
    * @return LessArray
@@ -101,7 +116,7 @@ class FilenameArray extends ProcessWireFilenameArray
     if (strpos($pattern, '**') !== false) {
       $glob = '{';
       // build a pattern like this:
-      // /var/www/html/site/templates/RockPageBuilder/{,*,*/*,*/*/*}/*.less
+      // /var/www/html/site/templates/RockPageBuilder/{*,*/*,*/*/*}.less
       for ($i = 1; $i <= $levels; $i++) {
         $glob .= rtrim(str_repeat('*/', $i), '/');
         $glob .= ',';
