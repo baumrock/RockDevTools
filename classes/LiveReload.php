@@ -164,7 +164,14 @@ class LiveReload extends Wire
 
   public function watch(): bool
   {
-    if (!wire()->config->livereload) return false;
+    // by default livereload is enabled if rockdevtools is enabled
+    // if rockdevtools is disabled the livereload class will not be loaded
+    // we check again just to be sure
+    if (!wire()->config->rockdevtools) return false;
+
+    // you can disable livereload by setting livereload to false in your config
+    if (wire()->config->livereload === false) return false;
+
     // see https://processwire.com/talk/topic/30997--
     // using str_ends_with to support subfolder installations!
     if (array_key_exists('REQUEST_URI', $_SERVER)) {

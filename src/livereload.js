@@ -40,9 +40,10 @@
       return !!document.querySelectorAll(".InputfieldStateChanged").length;
     }
 
-    onError() {
+    onError(event) {
       if (document.querySelector("#tracy-bs")) return;
       console.error("Error occurred in EventSource.");
+      console.error(event);
     }
 
     onMessage(event) {
