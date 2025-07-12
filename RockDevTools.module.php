@@ -17,7 +17,7 @@ function rockdevtools(): RockDevTools
  * @link https://www.baumrock.com
  */
 require_once __DIR__ . '/vendor/autoload.php';
-class RockDevTools extends WireData implements Module
+class RockDevTools extends WireData implements Module, ConfigurableModule
 {
   public $livereload;
 
@@ -59,6 +59,17 @@ class RockDevTools extends WireData implements Module
   public function assets(): Assets
   {
     return new Assets();
+  }
+
+  public function getModuleConfigInputfields(InputfieldWrapper $inputfields)
+  {
+    $inputfields->add([
+      'type' => 'markup',
+      'label' => 'LiveReload Files List',
+      'value' => wire()->files->render(__DIR__ . '/markup/livereloadinfo.php'),
+      'icon' => 'magic',
+    ]);
+    return $inputfields;
   }
 
   /**

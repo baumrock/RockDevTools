@@ -3,8 +3,10 @@
 namespace RockDevTools;
 
 use Nette\Utils\FileInfo;
+use Nette\Utils\Finder;
 use ProcessWire\HookEvent;
 use ProcessWire\Page;
+use ProcessWire\Paths;
 use ProcessWire\Wire;
 use Tracy\Debugger;
 
@@ -57,17 +59,23 @@ class LiveReload extends Wire
     $this->loop();
   }
 
-  public function filesToWatch(): array
-  {
+  public function filesToWatch(
+    bool $returnUrls = false,
+    ?callable $sorter = null,
+  ): array {
     // note: do not cache files to watch
     // to make sure newly created files trigger a reload
     require dirname(__DIR__) . '/src/livereload.php';
+    /** @var Nette\Utils\Finder $files */
+
     $configfile = wire()->config->paths->site . 'config-livereload.php';
     if (is_file($configfile)) require $configfile;
     $arr = [];
+    if ($sorter) $files->sortBy($sorter);
     foreach ($files->collect() as $file) {
       /** @var FileInfo $file */
-      $arr[] = (string)$file;
+      if ($returnUrls) $arr[] = $this->toUrl($file);
+      else $arr[] = (string)$file;
     }
     return $arr;
   }
@@ -160,6 +168,15 @@ class LiveReload extends Wire
     echo "data: $msg\n\n";
     echo str_pad('', 8186) . "\n";
     flush();
+  }
+
+  public function toUrl(FileInfo $file): string
+  {
+    return str_replace(
+      wire()->config->paths->root,
+      wire()->config->urls->root,
+      Paths::normalizeSeparators($file)
+    );
   }
 
   public function watch(): bool
