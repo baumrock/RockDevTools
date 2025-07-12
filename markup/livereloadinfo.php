@@ -81,3 +81,4 @@ else $livereload = 'enabled (as long as not set to false)';
     if (filter.value) table.setFilter('url', 'like', filter.value);
   });
 </script>
+<small>You think that's a cool grid? Check out my PRO module <a href='https://www.baumrock.com/RockGrid' target='_blank'>RockGrid</a>!</small>
