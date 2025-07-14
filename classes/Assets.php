@@ -53,6 +53,12 @@ class Assets extends Wire
     return !array_key_exists('extension', pathinfo($path));
   }
 
+  /**
+   * Is the source file newer than the destination file?
+   * @param string $srcFile
+   * @param string $dstFile
+   * @return bool
+   */
   public function isNewer(
     string $srcFile,
     string $dstFile,
