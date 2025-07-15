@@ -80,6 +80,13 @@ class FilenameArray extends ProcessWireFilenameArray
     return $this;
   }
 
+  public function __debugInfo()
+  {
+    return [
+      'files' => $this->data,
+    ];
+  }
+
   /**
    * Did the list of files in the array change? (file added or removed)
    * @param string $dstFile
@@ -196,7 +203,7 @@ class FilenameArray extends ProcessWireFilenameArray
 
     // log to debug bar
     if (function_exists('bd')) {
-      bd("Compiling $to");
+      bd($this, "Compiling files to $to");
     }
 
     // make sure the folder exists

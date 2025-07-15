@@ -19,6 +19,7 @@ function rockdevtools(): RockDevTools
 require_once __DIR__ . '/vendor/autoload.php';
 class RockDevTools extends WireData implements Module, ConfigurableModule
 {
+  public $debug = false;
   public $livereload;
 
   private $rockcss = false;
