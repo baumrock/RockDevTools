@@ -195,7 +195,9 @@ class FilenameArray extends ProcessWireFilenameArray
     if ($onlyIfChanged && !$this->hasChanges($dst)) return $this;
 
     // log to debug bar
-    if (function_exists('bd')) bd("Compiling $to");
+    if (function_exists('bd')) {
+      bd("Compiling $to");
+    }
 
     // make sure the folder exists
     wire()->files->mkdir(dirname($dst), true);
