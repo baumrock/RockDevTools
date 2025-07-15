@@ -86,6 +86,63 @@ $array->add(
 - Returns `$this` for method chaining
 - If a glob pattern is detected (contains `*`), it automatically uses `addAll()` internally
 
+## Custom Root Path
+
+The `setRoot()` method on the `Assets` class allows you to customize the root folder for all path operations of that Assets object. This is particularly useful when you want to work with assets that are located outside of the ProcessWire root directory.
+
+Once you set a custom root, all subsequent path operations will be relative to that root.
+
+You might need this feature in scenarios like:
+
+- **Multi-level project structure**: When ProcessWire is in `/var/www/html/public` but your source assets are in `/var/www/html/src` (one level above public)
+- **Shared assets**: When you have assets shared between multiple projects or modules
+- **Build tools integration**: When working with external build tools that expect assets in specific locations
+
+### Basic Usage
+
+You can set a custom root path in two ways:
+
+#### Method 1: Using setRoot() method
+```php
+$devtools->assets()
+  // Set root to one level above ProcessWire root
+  ->setRoot('../')
+  ->less()
+  ->add('/src/styles/main.less')
+  ->save('/public/dst/styles.min.css');
+```
+
+#### Method 2: Using the constructor
+```php
+// Set root to one level above ProcessWire root
+$devtools->assets('../')
+  ->less()
+  ->add('/src/styles/main.less')
+  ->save('/public/dst/styles.min.css');
+```
+
+### Example
+
+```php
+// If ProcessWire is in /var/www/html/public
+// and your assets are in /var/www/html/src
+$devtools->assets()
+  ->setRoot('../')
+  ->less()
+  ->add('/src/uikit/src/less/uikit.theme.less')
+  ->add('/src/less/**.less')
+  ->save('/public/dst/uikit.min.css');
+```
+
+### Path Resolution
+
+The `setRoot()` method automatically handles path normalization:
+
+- **Relative paths**: `../` is automatically converted to the parent directory of ProcessWire root
+- **Absolute paths**: Full paths are used as-is
+- **Path normalization**: All paths are normalized to use forward slashes
+- **Trailing slashes**: Automatically added to ensure consistent path handling
+
 ## Minify Folder
 
 When developing ProcessWire modules I like to write my CSS as LESS, because it's very easy to namespace my classes:
