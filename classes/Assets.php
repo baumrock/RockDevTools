@@ -106,33 +106,48 @@ class Assets extends Wire
   /**
    * Is the source file newer than the destination file?
    *
-   * If $srcFile is a directory, it will check if any file in the directory
-   * is newer than $dstFile.
+   * $srcPath can be a file or a directory.
    *
-   * @param string $srcFile
+   * @param string $srcPath
    * @param string $dstFile
    * @param int|null $depth
    * @return bool
    */
   public function isNewer(
-    string $srcFile,
+    string $srcPath,
     string $dstFile,
     ?int $depth = 10,
-  ): bool {
-    $srcFile = $this->toPath($srcFile);
+  ): false|ChangeInfo {
+    $srcPath = $this->toPath($srcPath);
     $dstFile = $this->toPath($dstFile);
+    // bd("checking isNewer:
+    //   $srcPath
+    //   $dstFile");
 
     // if $dstFile does not exist, return true
-    if (!is_file($dstFile)) return true;
+    if (!is_file($dstFile)) {
+      return new ChangeInfo('dstFile not found', $srcPath, $dstFile);
+    }
+
+    // save modified time of $dstFile
+    $modified = filemtime($dstFile);
 
     // if src is a file check filemtime
-    if (!is_dir($srcFile)) return @filemtime($srcFile) > @filemtime($dstFile);
+    if (!is_dir($srcPath)) {
+      $changed = filemtime($srcPath) > $modified;
+      if ($changed) {
+        return new ChangeInfo('file is newer', $srcPath, $dstFile);
+      }
+      return false;
+    }
 
     // if src is a directory, check if any file is newer than $dstFile
-    $glob = self::recursiveGlob($srcFile . '**', $depth);
+    $glob = self::recursiveGlob($srcPath . '**', $depth);
     foreach ($glob as $file) {
-      $changed = @filemtime($file) > @filemtime($dstFile);
-      if ($changed) return true;
+      $changed = filemtime($file) > $modified;
+      if ($changed) {
+        return new ChangeInfo('file is newer', $file, $dstFile);
+      }
     }
     return false;
   }
