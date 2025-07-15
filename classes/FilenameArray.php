@@ -195,7 +195,7 @@ class FilenameArray extends ProcessWireFilenameArray
     string $to,
     bool $onlyIfChanged = true,
     bool $sourceMap = false,
-    $minify = null,
+    ?bool $minify = null,
   ): self {
     $dst = rockdevtools()->toPath($to);
 
@@ -205,9 +205,13 @@ class FilenameArray extends ProcessWireFilenameArray
     // make sure the folder exists
     wire()->files->mkdir(dirname($dst), true);
 
-    if ($this instanceof LessArray) $this->saveLESS($dst, sourceMap: $sourceMap);
+    if ($this instanceof LessArray) $this->saveLESS(
+      dst: $dst,
+      sourceMap: $sourceMap,
+      minify: $minify
+    );
     if ($this instanceof ScssArray) $this->saveSCSS($dst, sourceMap: $sourceMap);
-    if ($this instanceof CssArray) $this->saveCSS($dst);
+    if ($this instanceof CssArray) $this->saveCSS($dst, $minify);
     if ($this instanceof JsArray) $this->saveJS($dst, $minify);
 
     $this->updateFilesListHash($dst);
