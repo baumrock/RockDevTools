@@ -14,9 +14,9 @@ class ChangeInfo extends WireData
     $this->setArray([
       'message' => $message,
       'srcFile' => $src,
-      'srcM' => date('Y-m-d H:i:s', filemtime($src)),
+      'srcM' => date('Y-m-d H:i:s', @filemtime($src)),
       'dstFile' => $dst,
-      'dstM' => date('Y-m-d H:i:s', filemtime($dst)),
+      'dstM' => date('Y-m-d H:i:s', @filemtime($dst)),
     ]);
   }
 }
