@@ -4,6 +4,7 @@ namespace RockDevTools;
 
 use MatthiasMullie\Minify\CSS;
 use MatthiasMullie\Minify\JS;
+use ProcessWire\Paths;
 use ProcessWire\Wire;
 use ProcessWire\WireException;
 
@@ -12,10 +13,18 @@ use function ProcessWire\wire;
 
 class Assets extends Wire
 {
+  private string $rootPath = '';
+
+  public function __construct($root = null)
+  {
+    parent::__construct();
+    $this->rootPath = wire()->config->paths->root;
+    if ($root) $this->setRoot($root);
+  }
 
   public function css(): CssArray
   {
-    return new CssArray();
+    return new CssArray($this);
   }
 
   /**
@@ -63,12 +72,14 @@ class Assets extends Wire
     string $srcFile,
     string $dstFile,
   ): bool {
+    $srcFile = $this->toPath($srcFile);
+    $dstFile = $this->toPath($dstFile);
     return @filemtime($srcFile) > @filemtime($dstFile);
   }
 
   public function js(): JsArray
   {
-    return new JsArray();
+    return new JsArray($this);
   }
 
   public function less(): LessArray
@@ -76,7 +87,7 @@ class Assets extends Wire
     if (!wire()->modules->get('Less')) {
       throw new WireException('Less module not found');
     }
-    return new LessArray();
+    return new LessArray($this);
   }
 
   public function scss(): ScssArray
@@ -84,7 +95,7 @@ class Assets extends Wire
     if (!wire()->modules->get('Scss')) {
       throw new WireException('Scss module not found');
     }
-    return new ScssArray();
+    return new ScssArray($this);
   }
 
   /**
@@ -199,5 +210,40 @@ class Assets extends Wire
     // otherwise minify if src file is newer (has changed)
     if ($this->isNewer($srcFile, $dstFile)) return true;
     else return false;
+  }
+
+  /**
+   * Allow customisation of the root folder for all toPath() calls
+   *
+   * This is necessary if you want to use asset tools in folders outside
+   * of the PW root. For example if you have PW in /var/www/html/public
+   * and you want your assets to be in /var/www/html/src (1 level above public)
+   *
+   * @param string $root
+   * @return Assets
+   * @throws WireException
+   */
+  public function setRoot(string $root): self
+  {
+    if ($root === '../') $root = dirname(wire()->config->paths->root);
+    $path = Paths::normalizeSeparators($root);
+    $this->rootPath = rtrim($path, '/') . '/';
+    return $this;
+  }
+
+  /**
+   * Ensures that given path is a path within the set root.
+   *
+   * Usage:
+   * $assets->toPath("/site/templates/foo.css");
+   * $assets->toPath("/var/www/html/site/templates/foo.css");
+   * @param string $path
+   * @return string
+   */
+  public function toPath(string $path): string
+  {
+    $path = Paths::normalizeSeparators($path);
+    if (str_starts_with($path, $this->rootPath)) return $path;
+    return $this->rootPath . ltrim($path, '/');
   }
 }

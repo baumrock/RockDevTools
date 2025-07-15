@@ -56,9 +56,9 @@ class RockDevTools extends WireData implements Module, ConfigurableModule
     wire()->addHookAfter('Page::render', $this->livereload, 'addLiveReloadMarkup');
   }
 
-  public function assets(): Assets
+  public function assets(?string $root = null): Assets
   {
-    return new Assets();
+    return new Assets($root);
   }
 
   public function getModuleConfigInputfields(InputfieldWrapper $inputfields)
@@ -90,22 +90,5 @@ class RockDevTools extends WireData implements Module, ConfigurableModule
   {
     if (!$this->rockcss) $this->rockcss = new RockCSS();
     return $this->rockcss;
-  }
-
-  /**
-   * Ensures that given path is a path within the PW root.
-   *
-   * Usage:
-   * $rockdevtools->toPath("/site/templates/foo.css");
-   * $rockdevtools->toPath("/var/www/html/site/templates/foo.css");
-   * @param string $path
-   * @return string
-   */
-  public function toPath(string $path): string
-  {
-    $path = Paths::normalizeSeparators($path);
-    $root = wire()->config->paths->root;
-    if (str_starts_with($path, $root)) return $path;
-    return $root . ltrim($path, '/');
   }
 }

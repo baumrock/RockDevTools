@@ -13,6 +13,13 @@ use function ProcessWire\wire;
 
 class FilenameArray extends ProcessWireFilenameArray
 {
+  private Assets $assets;
+
+  public function __construct(Assets $assets)
+  {
+    parent::__construct();
+    $this->assets = $assets;
+  }
 
   /**
    * Add a single file or multiple files via glob pattern.
@@ -33,7 +40,7 @@ class FilenameArray extends ProcessWireFilenameArray
   public function add($filename, int $levels = 3)
   {
     if (str_contains($filename, '*')) return $this->addAll($filename, $levels);
-    $filename = rockdevtools()->toPath($filename);
+    $filename = $this->assets->toPath($filename);
     return parent::add($filename);
   }
 
@@ -57,7 +64,7 @@ class FilenameArray extends ProcessWireFilenameArray
 
   public function append($filename)
   {
-    $filename = rockdevtools()->toPath($filename);
+    $filename = $this->assets->toPath($filename);
     return parent::append($filename);
   }
 
@@ -83,7 +90,7 @@ class FilenameArray extends ProcessWireFilenameArray
   public function filesChanged(string $dstFile): bool
   {
     if (rockdevtools()->debug) return true;
-    $dstFile = rockdevtools()->toPath($dstFile);
+    $dstFile = $this->assets->toPath($dstFile);
     $oldListHash = wire()->cache->get('rockdevtools-filenames-' . md5($dstFile));
     if (!$oldListHash) return true;
     return $oldListHash !== $this->filesListHash();
@@ -109,7 +116,7 @@ class FilenameArray extends ProcessWireFilenameArray
    */
   public function glob(string $pattern, int $levels = 3): array
   {
-    $pattern = rockdevtools()->toPath($pattern);
+    $pattern = $this->assets->toPath($pattern);
 
     // if path contains ** we use brace expansion to find recursively
     $glob = '';
@@ -140,7 +147,7 @@ class FilenameArray extends ProcessWireFilenameArray
   public function hasChanges(string $dstFile): bool
   {
     if (rockdevtools()->debug) return true;
-    $dstFile = rockdevtools()->toPath($dstFile);
+    $dstFile = $this->assets->toPath($dstFile);
 
     // if dst file does not exist, return true
     if (!is_file($dstFile)) return true;
@@ -160,7 +167,7 @@ class FilenameArray extends ProcessWireFilenameArray
 
   public function prepend($filename)
   {
-    $filename = rockdevtools()->toPath($filename);
+    $filename = $this->assets->toPath($filename);
     return parent::prepend($filename);
   }
 
@@ -197,7 +204,7 @@ class FilenameArray extends ProcessWireFilenameArray
     bool $sourceMap = false,
     ?bool $minify = null,
   ): self {
-    $dst = rockdevtools()->toPath($to);
+    $dst = $this->assets->toPath($to);
 
     // early exit if no changes
     if ($onlyIfChanged && !$this->hasChanges($dst)) return $this;
@@ -226,7 +233,7 @@ class FilenameArray extends ProcessWireFilenameArray
 
   public function updateFilesListHash(string $dstFile): void
   {
-    $dstFile = rockdevtools()->toPath($dstFile);
+    $dstFile = $this->assets->toPath($dstFile);
     wire()->cache->save(
       'rockdevtools-filenames-' . md5($dstFile),
       $this->filesListHash()
