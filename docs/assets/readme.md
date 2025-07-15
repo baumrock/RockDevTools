@@ -174,6 +174,36 @@ RockDevTools will only minify files that are newer than the destination file.
 
 Note that this will NOT merge files to a single file as this feature is intended for backend development.
 
+## Helpers
+
+### recursiveGlob()
+
+The `Assets::recursiveGlob()` static method provides a convenient way to find files recursively using glob patterns with the `**` syntax. This method is particularly useful when you need to find files in nested directories without manually specifying each level.
+
+#### Usage
+
+```php
+// Find all files recursively (default 3 levels deep)
+$files = Assets::recursiveGlob("/your/path/**");
+
+// Find all PHP files recursively (default 3 levels deep)
+$files = Assets::recursiveGlob("/your/path/**.php");
+
+// Find all CSS files recursively with custom depth (2 levels)
+$files = Assets::recursiveGlob("/your/path/**.css", 2);
+```
+
+#### Parameters
+
+- **`$pattern`** (string): The glob pattern to search for. Use `**` to indicate recursive search
+- **`$levels`** (int): The maximum depth of subdirectories to search (default: 3)
+
+#### How it works
+
+The method converts the `**` pattern into a PHP glob brace pattern. For example:
+- `"/foo/**"` with 3 levels becomes `"/foo/{*,*/*,*/*/*}"`
+- `"/foo/**.php"` with 2 levels becomes `"/foo/{*,*/*}.php"`
+
 ## Debugging
 
 When working on JS/CSS assets it can sometimes be useful to recreate the minified files even if they are not newer than the destination file. To do that you can set the `debug` config option to `true`:
@@ -184,7 +214,9 @@ rockdevtools()->debug = true;
 
 This will force RockDevTools to recreate all asset files even if no changes have been made.
 
-Another helpful feature is to dump the list of added files to the TracyDebugger bar:
+If you want to check wheter certain files are watched or not the easiest way to find out is to check out the list on the module config screen.
+
+Another option is to dump the list of added files to the TracyDebugger bar:
 
 ```php
 $devtools->assets()

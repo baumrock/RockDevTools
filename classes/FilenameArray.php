@@ -58,7 +58,7 @@ class FilenameArray extends ProcessWireFilenameArray
    */
   public function addAll(string $glob, int $levels = 3): self
   {
-    foreach ($this->glob($glob, $levels) as $file) $this->add($file);
+    foreach ($this->recursiveGlob($glob, $levels) as $file) $this->add($file);
     return $this;
   }
 
@@ -106,36 +106,6 @@ class FilenameArray extends ProcessWireFilenameArray
   }
 
   /**
-   * Get list of files by glob pattern
-   *
-   * This also supports ** for recursive globbing!
-   *
-   * @param string $pattern
-   * @param int $levels
-   * @return array
-   */
-  public function glob(string $pattern, int $levels = 3): array
-  {
-    $pattern = $this->assets->toPath($pattern);
-
-    // if path contains ** we use brace expansion to find recursively
-    $glob = '';
-    if (strpos($pattern, '**') !== false) {
-      $glob = '{';
-      // build a pattern like this:
-      // /var/www/html/site/templates/RockPageBuilder/{*,*/*,*/*/*}.less
-      for ($i = 1; $i <= $levels; $i++) {
-        $glob .= rtrim(str_repeat('*/', $i), '/');
-        $glob .= ',';
-      }
-      $glob = rtrim($glob, ',');
-      $glob .= '}';
-      $pattern = str_replace('**', $glob, $pattern);
-    }
-    return glob($pattern, GLOB_BRACE);
-  }
-
-  /**
    * Does the current list of files has any changes? This includes both
    * changed files or a changed list of files (added/removed files).
    *
@@ -172,13 +142,28 @@ class FilenameArray extends ProcessWireFilenameArray
   }
 
   /**
+   * Get list of files by glob pattern
+   *
+   * This also supports ** for recursive globbing!
+   *
+   * @param string $pattern
+   * @param int $levels
+   * @return array
+   */
+  public function recursiveGlob(string $pattern, int $levels = 3): array
+  {
+    $pattern = $this->assets->toPath($pattern);
+    return Assets::recursiveGlob($pattern, $levels);
+  }
+
+  /**
    * Remove file or files (glob pattern) from the list
    * @param string $file
    */
   public function remove($file): self
   {
     if (str_contains($file, '*')) {
-      $file = $this->glob($file);
+      $file = $this->recursiveGlob($file);
       foreach ($file as $f) $this->remove($f);
       return $this;
     }
@@ -208,6 +193,9 @@ class FilenameArray extends ProcessWireFilenameArray
 
     // early exit if no changes
     if ($onlyIfChanged && !$this->hasChanges($dst)) return $this;
+
+    // log to debug bar
+    if (function_exists('bd')) bd("Compiling $to");
 
     // make sure the folder exists
     wire()->files->mkdir(dirname($dst), true);

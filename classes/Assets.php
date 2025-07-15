@@ -50,6 +50,47 @@ class Assets extends Wire
   }
 
   /**
+   * Build a glob pattern for a given number of levels (for GLOB_BRACE)
+   *
+   * @param int $levels
+   * @return string
+   */
+  public static function globPattern(int $levels): string
+  {
+    // builds a pattern like this: {*,*/*,*/*/*}
+    // which can then be used with glob()
+    // /foo/{*,*/*,*/*/*}.php
+    $glob = '{';
+    for ($i = 1; $i <= $levels; $i++) {
+      $glob .= rtrim(str_repeat('*/', $i), '/');
+      $glob .= ',';
+    }
+    $glob = rtrim($glob, ',');
+    $glob .= '}';
+    return $glob;
+  }
+
+  /**
+   * Usage:
+   * $files = Assets::recursiveGlob("/foo/**")
+   * $files = Assets::recursiveGlob("/foo/**.php")
+   * $files = Assets::recursiveGlob("/foo/**.php", 2)
+   *
+   * @param string $pattern
+   * @param int $levels
+   * @return array
+   */
+  public static function recursiveGlob(string $pattern, int $levels): array
+  {
+    $glob = str_replace(
+      '**',
+      self::globPattern($levels),
+      $pattern,
+    );
+    return glob($glob, GLOB_BRACE);
+  }
+
+  /**
    * Is the given path a directory?
    *
    * Other than PHP's is_dir() this does NOT check if the path exists!
@@ -64,17 +105,36 @@ class Assets extends Wire
 
   /**
    * Is the source file newer than the destination file?
+   *
+   * If $srcFile is a directory, it will check if any file in the directory
+   * is newer than $dstFile.
+   *
    * @param string $srcFile
    * @param string $dstFile
+   * @param int|null $depth
    * @return bool
    */
   public function isNewer(
     string $srcFile,
     string $dstFile,
+    ?int $depth = 10,
   ): bool {
     $srcFile = $this->toPath($srcFile);
     $dstFile = $this->toPath($dstFile);
-    return @filemtime($srcFile) > @filemtime($dstFile);
+
+    // if $dstFile does not exist, return true
+    if (!is_file($dstFile)) return true;
+
+    // if src is a file check filemtime
+    if (!is_dir($srcFile)) return @filemtime($srcFile) > @filemtime($dstFile);
+
+    // if src is a directory, check if any file is newer than $dstFile
+    $glob = self::recursiveGlob($srcFile . '**', $depth);
+    foreach ($glob as $file) {
+      $changed = @filemtime($file) > @filemtime($dstFile);
+      if ($changed) return true;
+    }
+    return false;
   }
 
   public function js(): JsArray

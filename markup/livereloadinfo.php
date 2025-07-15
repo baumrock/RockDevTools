@@ -2,17 +2,14 @@
 
 namespace ProcessWire;
 
-use Nette\Utils\FileInfo;
-
-$files = rockdevtools()->livereload->filesToWatch(
-  returnUrls: true,
-);
-$root = rtrim(wire()->config->paths->root, '/');
+// note: do NOT use urls to support PW in /public
+// and watch files outside of /public (eg ../src)
+$files = rockdevtools()->livereload->filesToWatch();
 $ms = Debug::timer();
-$files = array_map(function ($file) use ($root) {
+$files = array_map(function ($file) {
   return [
-    'filemtime' => date('Y-m-d H:i:s', filemtime($root . $file)),
-    'url' => $file,
+    'filemtime' => date('Y-m-d H:i:s', filemtime($file)),
+    'path' => $file,
   ];
 }, $files);
 $ms = Debug::timer($ms) * 1000;
