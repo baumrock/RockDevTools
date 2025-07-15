@@ -115,8 +115,8 @@ class Assets extends Wire
     string $src,
     string $dst,
   ): self {
-    $src = rockdevtools()->toPath($src);
-    $dst = rockdevtools()->toPath($dst);
+    $src = $this->toPath($src);
+    $dst = $this->toPath($dst);
 
     // if $src is a folder minify all files in it
     if (is_dir($src)) {
