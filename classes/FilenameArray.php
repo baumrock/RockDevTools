@@ -202,7 +202,7 @@ class FilenameArray extends ProcessWireFilenameArray
     if ($onlyIfChanged && !$this->hasChanges($dst)) return $this;
 
     // log to debug bar
-    if (function_exists('bd')) {
+    if (function_exists('bd') && rockdevtools()->debugAssetTools) {
       bd($this, "Compiling files to $to");
     }
 

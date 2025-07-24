@@ -19,7 +19,7 @@ function rockdevtools(): RockDevTools
 require_once __DIR__ . '/vendor/autoload.php';
 class RockDevTools extends WireData implements Module, ConfigurableModule
 {
-  public $debug = false;
+  public $debugAssetTools = false;
   public $livereload;
 
   private $rockcss = false;
@@ -70,6 +70,15 @@ class RockDevTools extends WireData implements Module, ConfigurableModule
       'value' => wire()->files->render(__DIR__ . '/markup/livereloadinfo.php'),
       'icon' => 'magic',
     ]);
+
+    $inputfields->add([
+      'type' => 'checkbox',
+      'label' => 'Debug Asset Tools',
+      'name' => 'debugAssetTools',
+      'checked' => $this->debugAssetTools,
+      'notes' => 'If enabled, the asset tools will log debug information to the Tracy debug bar.',
+    ]);
+
     return $inputfields;
   }
 
