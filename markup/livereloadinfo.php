@@ -71,11 +71,11 @@ else $livereload = 'enabled (as long as not set to false)';
   const filter = document.querySelector('#livereload-filter');
   filter.addEventListener('input', function() {
     localStorage.setItem('livereload-filter', filter.value);
-    table.setFilter('url', 'like', filter.value);
+    table.setFilter('path', 'like', filter.value);
   });
   table.on('tableBuilt', function() {
     filter.value = localStorage.getItem('livereload-filter') || '';
-    if (filter.value) table.setFilter('url', 'like', filter.value);
+    if (filter.value) table.setFilter('path', 'like', filter.value);
   });
 </script>
 <small>You think that's a cool grid? Check out my PRO module <a href='https://www.baumrock.com/RockGrid' target='_blank'>RockGrid</a>!</small>
