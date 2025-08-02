@@ -3,8 +3,10 @@
 namespace RockDevTools;
 
 use Nette\Utils\FileInfo;
+use Nette\Utils\Finder;
 use ProcessWire\HookEvent;
 use ProcessWire\Page;
+use ProcessWire\Paths;
 use ProcessWire\Wire;
 use Tracy\Debugger;
 
@@ -13,6 +15,8 @@ use function ProcessWire\wire;
 
 class LiveReload extends Wire
 {
+  const param = 'rockdevtools-livereload';
+
   public function __construct()
   {
     wire()->addHookBefore('Session::init', $this, 'addSSE');
@@ -45,7 +49,8 @@ class LiveReload extends Wire
 
   protected function addSSE(HookEvent $event): void
   {
-    if (!str_ends_with((string)@$_GET['it'], 'rockdevtools-livereload')) return;
+    // early exit if not watching
+    if (!$this->watch()) return;
 
     // disable tracy for the SSE stream
     wire()->config->tracy = ['enabled' => false];
@@ -54,17 +59,23 @@ class LiveReload extends Wire
     $this->loop();
   }
 
-  public function filesToWatch(): array
-  {
+  public function filesToWatch(
+    bool $returnUrls = false,
+    ?callable $sorter = null,
+  ): array {
     // note: do not cache files to watch
     // to make sure newly created files trigger a reload
     require dirname(__DIR__) . '/src/livereload.php';
+    /** @var Nette\Utils\Finder $files */
+
     $configfile = wire()->config->paths->site . 'config-livereload.php';
     if (is_file($configfile)) require $configfile;
     $arr = [];
+    if ($sorter) $files->sortBy($sorter);
     foreach ($files->collect() as $file) {
       /** @var FileInfo $file */
-      $arr[] = (string)$file;
+      if ($returnUrls) $arr[] = $this->toUrl($file);
+      else $arr[] = (string)$file;
     }
     return $arr;
   }
@@ -139,7 +150,7 @@ class LiveReload extends Wire
   {
     $src = wire()->config->urls(rockdevtools()) . 'dst/livereload.min.js';
     $src = wire()->config->versionUrl($src);
-    $url = wire()->config->urls->root . 'rockdevtools-livereload';
+    $url = wire()->config->urls->root . self::param;
     $force = (int)wire()->config->livereloadForce;
     return "<script
       src='$src'
@@ -159,9 +170,33 @@ class LiveReload extends Wire
     flush();
   }
 
-  public function watch(): void
+  public function toUrl(FileInfo $file): string
   {
-    if (!wire()->config->livereload) return;
-    if (!str_ends_with((string)@$_GET['it'], 'rockdevtools-livereload')) return;
+    return str_replace(
+      wire()->config->paths->root,
+      wire()->config->urls->root,
+      Paths::normalizeSeparators($file)
+    );
+  }
+
+  public function watch(): bool
+  {
+    // by default livereload is enabled if rockdevtools is enabled
+    // if rockdevtools is disabled the livereload class will not be loaded
+    // we check again just to be sure
+    if (!wire()->config->rockdevtools) return false;
+
+    // you can disable livereload by setting livereload to false in your config
+    if (wire()->config->livereload === false) return false;
+
+    // see https://processwire.com/talk/topic/30997--
+    // using str_ends_with to support subfolder installations!
+    if (array_key_exists('REQUEST_URI', $_SERVER)) {
+      return str_ends_with($_SERVER['REQUEST_URI'], self::param);
+    }
+    if (array_key_exists('it', $_GET)) {
+      return str_ends_with($_GET['it'], self::param);
+    }
+    return false;
   }
 }

@@ -4,6 +4,7 @@ namespace RockDevTools;
 
 use MatthiasMullie\Minify\CSS;
 use MatthiasMullie\Minify\JS;
+use ProcessWire\Paths;
 use ProcessWire\Wire;
 use ProcessWire\WireException;
 
@@ -12,10 +13,18 @@ use function ProcessWire\wire;
 
 class Assets extends Wire
 {
+  private string $rootPath = '';
+
+  public function __construct($root = null)
+  {
+    parent::__construct();
+    $this->rootPath = wire()->config->paths->root;
+    if ($root) $this->setRoot($root);
+  }
 
   public function css(): CssArray
   {
-    return new CssArray();
+    return new CssArray($this);
   }
 
   /**
@@ -41,6 +50,47 @@ class Assets extends Wire
   }
 
   /**
+   * Build a glob pattern for a given number of levels (for GLOB_BRACE)
+   *
+   * @param int $levels
+   * @return string
+   */
+  public static function globPattern(int $levels): string
+  {
+    // builds a pattern like this: {*,*/*,*/*/*}
+    // which can then be used with glob()
+    // /foo/{*,*/*,*/*/*}.php
+    $glob = '{';
+    for ($i = 1; $i <= $levels; $i++) {
+      $glob .= rtrim(str_repeat('*/', $i), '/');
+      $glob .= ',';
+    }
+    $glob = rtrim($glob, ',');
+    $glob .= '}';
+    return $glob;
+  }
+
+  /**
+   * Usage:
+   * $files = Assets::recursiveGlob("/foo/**")
+   * $files = Assets::recursiveGlob("/foo/**.php")
+   * $files = Assets::recursiveGlob("/foo/**.php", 2)
+   *
+   * @param string $pattern
+   * @param int $levels
+   * @return array
+   */
+  public static function recursiveGlob(string $pattern, int $levels): array
+  {
+    $glob = str_replace(
+      '**',
+      self::globPattern($levels),
+      $pattern,
+    );
+    return glob($glob, GLOB_BRACE);
+  }
+
+  /**
    * Is the given path a directory?
    *
    * Other than PHP's is_dir() this does NOT check if the path exists!
@@ -53,16 +103,58 @@ class Assets extends Wire
     return !array_key_exists('extension', pathinfo($path));
   }
 
+  /**
+   * Is the source file newer than the destination file?
+   *
+   * $srcPath can be a file or a directory.
+   *
+   * @param string $srcPath
+   * @param string $dstFile
+   * @param int|null $depth
+   * @return bool
+   */
   public function isNewer(
-    string $srcFile,
+    string $srcPath,
     string $dstFile,
-  ): bool {
-    return @filemtime($srcFile) > @filemtime($dstFile);
+    ?int $depth = 10,
+  ): false|ChangeInfo {
+    $srcPath = $this->toPath($srcPath);
+    $dstFile = $this->toPath($dstFile);
+    // bd("checking isNewer:
+    //   $srcPath
+    //   $dstFile");
+
+    // if $dstFile does not exist, return true
+    if (!is_file($dstFile)) {
+      return new ChangeInfo('dstFile not found', $srcPath, $dstFile);
+    }
+
+    // save modified time of $dstFile
+    $modified = filemtime($dstFile);
+
+    // if src is a file check filemtime
+    if (!is_dir($srcPath)) {
+      $changed = filemtime($srcPath) > $modified;
+      if ($changed) {
+        return new ChangeInfo('file is newer', $srcPath, $dstFile);
+      }
+      return false;
+    }
+
+    // if src is a directory, check if any file is newer than $dstFile
+    $glob = self::recursiveGlob($srcPath . '**', $depth);
+    foreach ($glob as $file) {
+      $changed = filemtime($file) > $modified;
+      if ($changed) {
+        return new ChangeInfo('file is newer', $file, $dstFile);
+      }
+    }
+    return false;
   }
 
   public function js(): JsArray
   {
-    return new JsArray();
+    return new JsArray($this);
   }
 
   public function less(): LessArray
@@ -70,7 +162,7 @@ class Assets extends Wire
     if (!wire()->modules->get('Less')) {
       throw new WireException('Less module not found');
     }
-    return new LessArray();
+    return new LessArray($this);
   }
 
   public function scss(): ScssArray
@@ -78,7 +170,7 @@ class Assets extends Wire
     if (!wire()->modules->get('Scss')) {
       throw new WireException('Scss module not found');
     }
-    return new ScssArray();
+    return new ScssArray($this);
   }
 
   /**
@@ -98,8 +190,8 @@ class Assets extends Wire
     string $src,
     string $dst,
   ): self {
-    $src = rockdevtools()->toPath($src);
-    $dst = rockdevtools()->toPath($dst);
+    $src = $this->toPath($src);
+    $dst = $this->toPath($dst);
 
     // if $src is a folder minify all files in it
     if (is_dir($src)) {
@@ -193,5 +285,40 @@ class Assets extends Wire
     // otherwise minify if src file is newer (has changed)
     if ($this->isNewer($srcFile, $dstFile)) return true;
     else return false;
+  }
+
+  /**
+   * Allow customisation of the root folder for all toPath() calls
+   *
+   * This is necessary if you want to use asset tools in folders outside
+   * of the PW root. For example if you have PW in /var/www/html/public
+   * and you want your assets to be in /var/www/html/src (1 level above public)
+   *
+   * @param string $root
+   * @return Assets
+   * @throws WireException
+   */
+  public function setRoot(string $root): self
+  {
+    if ($root === '../') $root = dirname(wire()->config->paths->root);
+    $path = Paths::normalizeSeparators($root);
+    $this->rootPath = rtrim($path, '/') . '/';
+    return $this;
+  }
+
+  /**
+   * Ensures that given path is a path within the set root.
+   *
+   * Usage:
+   * $assets->toPath("/site/templates/foo.css");
+   * $assets->toPath("/var/www/html/site/templates/foo.css");
+   * @param string $path
+   * @return string
+   */
+  public function toPath(string $path): string
+  {
+    $path = Paths::normalizeSeparators($path);
+    if (str_starts_with($path, $this->rootPath)) return $path;
+    return $this->rootPath . ltrim($path, '/');
   }
 }

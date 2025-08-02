@@ -86,6 +86,63 @@ $array->add(
 - Returns `$this` for method chaining
 - If a glob pattern is detected (contains `*`), it automatically uses `addAll()` internally
 
+## Custom Root Path
+
+The `setRoot()` method on the `Assets` class allows you to customize the root folder for all path operations of that Assets object. This is particularly useful when you want to work with assets that are located outside of the ProcessWire root directory.
+
+Once you set a custom root, all subsequent path operations will be relative to that root.
+
+You might need this feature in scenarios like:
+
+- **Multi-level project structure**: When ProcessWire is in `/var/www/html/public` but your source assets are in `/var/www/html/src` (one level above public)
+- **Shared assets**: When you have assets shared between multiple projects or modules
+- **Build tools integration**: When working with external build tools that expect assets in specific locations
+
+### Basic Usage
+
+You can set a custom root path in two ways:
+
+#### Method 1: Using setRoot() method
+```php
+$devtools->assets()
+  // Set root to one level above ProcessWire root
+  ->setRoot('../')
+  ->less()
+  ->add('/src/styles/main.less')
+  ->save('/public/dst/styles.min.css');
+```
+
+#### Method 2: Using the constructor
+```php
+// Set root to one level above ProcessWire root
+$devtools->assets('../')
+  ->less()
+  ->add('/src/styles/main.less')
+  ->save('/public/dst/styles.min.css');
+```
+
+### Example
+
+```php
+// If ProcessWire is in /var/www/html/public
+// and your assets are in /var/www/html/src
+$devtools->assets()
+  ->setRoot('../')
+  ->less()
+  ->add('/src/uikit/src/less/uikit.theme.less')
+  ->add('/src/less/**.less')
+  ->save('/public/dst/uikit.min.css');
+```
+
+### Path Resolution
+
+The `setRoot()` method automatically handles path normalization:
+
+- **Relative paths**: `../` is automatically converted to the parent directory of ProcessWire root
+- **Absolute paths**: Full paths are used as-is
+- **Path normalization**: All paths are normalized to use forward slashes
+- **Trailing slashes**: Automatically added to ensure consistent path handling
+
 ## Minify Folder
 
 When developing ProcessWire modules I like to write my CSS as LESS, because it's very easy to namespace my classes:
@@ -117,6 +174,36 @@ RockDevTools will only minify files that are newer than the destination file.
 
 Note that this will NOT merge files to a single file as this feature is intended for backend development.
 
+## Helpers
+
+### recursiveGlob()
+
+The `Assets::recursiveGlob()` static method provides a convenient way to find files recursively using glob patterns with the `**` syntax. This method is particularly useful when you need to find files in nested directories without manually specifying each level.
+
+#### Usage
+
+```php
+// Find all files recursively (default 3 levels deep)
+$files = Assets::recursiveGlob("/your/path/**");
+
+// Find all PHP files recursively (default 3 levels deep)
+$files = Assets::recursiveGlob("/your/path/**.php");
+
+// Find all CSS files recursively with custom depth (2 levels)
+$files = Assets::recursiveGlob("/your/path/**.css", 2);
+```
+
+#### Parameters
+
+- **`$pattern`** (string): The glob pattern to search for. Use `**` to indicate recursive search
+- **`$levels`** (int): The maximum depth of subdirectories to search (default: 3)
+
+#### How it works
+
+The method converts the `**` pattern into a PHP glob brace pattern. For example:
+- `"/foo/**"` with 3 levels becomes `"/foo/{*,*/*,*/*/*}"`
+- `"/foo/**.php"` with 2 levels becomes `"/foo/{*,*/*}.php"`
+
 ## Debugging
 
 When working on JS/CSS assets it can sometimes be useful to recreate the minified files even if they are not newer than the destination file. To do that you can set the `debug` config option to `true`:
@@ -127,7 +214,9 @@ rockdevtools()->debug = true;
 
 This will force RockDevTools to recreate all asset files even if no changes have been made.
 
-Another helpful feature is to dump the list of added files to the TracyDebugger bar:
+If you want to check wheter certain files are watched or not the easiest way to find out is to check out the list on the module config screen.
+
+Another option is to dump the list of added files to the TracyDebugger bar:
 
 ```php
 $devtools->assets()

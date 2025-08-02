@@ -17,8 +17,9 @@ function rockdevtools(): RockDevTools
  * @link https://www.baumrock.com
  */
 require_once __DIR__ . '/vendor/autoload.php';
-class RockDevTools extends WireData implements Module
+class RockDevTools extends WireData implements Module, ConfigurableModule
 {
+  public $debugAssetTools = false;
   public $livereload;
 
   private $rockcss = false;
@@ -56,9 +57,29 @@ class RockDevTools extends WireData implements Module
     wire()->addHookAfter('Page::render', $this->livereload, 'addLiveReloadMarkup');
   }
 
-  public function assets(): Assets
+  public function assets(?string $root = null): Assets
   {
-    return new Assets();
+    return new Assets($root);
+  }
+
+  public function getModuleConfigInputfields(InputfieldWrapper $inputfields)
+  {
+    $inputfields->add([
+      'type' => 'markup',
+      'label' => 'LiveReload Files List',
+      'value' => wire()->files->render(__DIR__ . '/markup/livereloadinfo.php'),
+      'icon' => 'magic',
+    ]);
+
+    $inputfields->add([
+      'type' => 'checkbox',
+      'label' => 'Debug Asset Tools',
+      'name' => 'debugAssetTools',
+      'checked' => $this->debugAssetTools,
+      'notes' => 'If enabled, the asset tools will log debug information to the Tracy debug bar.',
+    ]);
+
+    return $inputfields;
   }
 
   /**
@@ -79,22 +100,5 @@ class RockDevTools extends WireData implements Module
   {
     if (!$this->rockcss) $this->rockcss = new RockCSS();
     return $this->rockcss;
-  }
-
-  /**
-   * Ensures that given path is a path within the PW root.
-   *
-   * Usage:
-   * $rockdevtools->toPath("/site/templates/foo.css");
-   * $rockdevtools->toPath("/var/www/html/site/templates/foo.css");
-   * @param string $path
-   * @return string
-   */
-  public function toPath(string $path): string
-  {
-    $path = Paths::normalizeSeparators($path);
-    $root = wire()->config->paths->root;
-    if (str_starts_with($path, $root)) return $path;
-    return $root . ltrim($path, '/');
   }
 }
