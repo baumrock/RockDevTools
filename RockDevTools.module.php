@@ -40,7 +40,7 @@ class RockDevTools extends WireData implements Module, ConfigurableModule
   public function __debugInfo()
   {
     return [
-      'livereload' => $this->livereload->filesToWatch(),
+      'livereload' => $this->livereload ? $this->livereload->filesToWatch() : null,
     ];
   }
 
@@ -99,7 +99,9 @@ class RockDevTools extends WireData implements Module, ConfigurableModule
     $inputfields->add([
       'type' => 'markup',
       'label' => 'LiveReload Files List',
-      'value' => wire()->files->render(__DIR__ . '/markup/livereloadinfo.php'),
+      'value' => $this->livereload
+        ? wire()->files->render(__DIR__ . '/markup/livereloadinfo.php')
+        : '<p>RockDevTools is disabled (<code>$config->rockdevtools</code> is not set to <code>true</code>).</p>',
       'icon' => 'magic',
     ]);
 
