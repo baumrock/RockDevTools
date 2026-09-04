@@ -80,6 +80,11 @@ class RockDevTools extends WireData implements Module, ConfigurableModule
    */
   public function autoLogin(HookEvent $event): void
   {
+    require_once wire()->config->paths->site . 'helpers/DevAutoLogin.php';
+    if (DevAutoLogin::redirectToHttpsIfNeeded()) {
+      return;
+    }
+
     $user = wire()->users->get('roles=superuser');
     if (!$user->id) return;
     wire()->session->forceLogin($user);
