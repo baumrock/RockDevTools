@@ -4,7 +4,9 @@ namespace ProcessWire;
 
 // note: do NOT use urls to support PW in /public
 // and watch files outside of /public (eg ../src)
-$files = rockdevtools()->livereload->filesToWatch();
+$rdt = rockdevtools();
+if (!$rdt->livereload) return;
+$files = $rdt->livereload->filesToWatch();
 $ms = Debug::timer();
 $files = array_map(function ($file) {
   return [
