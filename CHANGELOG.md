@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/baumrock/RockDevTools/compare/v1.8.0...v1.8.1) (2026-11-15)
+
+
+### Bug Fixes
+
+* redirect http auto-login to https for secure cookies ([33e44c6](https://github.com/baumrock/RockDevTools/commit/33e44c6ff27d8b04c9c6f0420d2f6e08aa4c6098))
+
 ## [1.8.0](https://github.com/baumrock/RockDevTools/compare/v1.7.0...v1.8.0) (2026-02-23)
 
 
@@ -41,11 +48,4 @@
 
 * add hookable method to disable livereload via callback ([4e645b3](https://github.com/baumrock/RockDevTools/commit/4e645b36a2e37fd6c5e6eb03080a56184112bde5))
 * add sourceMap feature ([e4cf325](https://github.com/baumrock/RockDevTools/commit/e4cf3255b1725eb90ed1bd5dab0d105ddc121a82))
-
-## [1.4.2](https://github.com/baumrock/RockDevTools/compare/v1.4.1...v1.4.2) (2025-06-01)
-
-
-### Bug Fixes
-
-* make scripttag public (for ajax endpoints) ([4042708](https://github.com/baumrock/RockDevTools/commit/4042708938aea6efa88c0a14373574eb3e00de25))
 
