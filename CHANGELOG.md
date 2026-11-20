@@ -1,3 +1,10 @@
+## [1.8.2](https://github.com/baumrock/RockDevTools/compare/v1.8.1...v1.8.2) (2026-11-20)
+
+
+### Bug Fixes
+
+* alias rfGrow to grow in RockCSS ([67eb833](https://github.com/baumrock/RockDevTools/commit/67eb833679781d3e3f0f8c3650f7ee1b78380c3c))
+
 ## [1.8.1](https://github.com/baumrock/RockDevTools/compare/v1.8.0...v1.8.1) (2026-11-15)
 
 
@@ -40,12 +47,4 @@
 * prevent filemtime warning ([bbc9d11](https://github.com/baumrock/RockDevTools/commit/bbc9d11e014f34e69ccca4aa00d17867806787e3))
 * remove call to rockdevtools()->toPath() ([71e9fbb](https://github.com/baumrock/RockDevTools/commit/71e9fbbd1d10619d0debf73dbbc9ec81a3853f35))
 * support livereload with /public setup ([e6d24ce](https://github.com/baumrock/RockDevTools/commit/e6d24ce8b38dceb3da7e17e0f21b9be8bcb3aad5))
-
-## [1.5.0](https://github.com/baumrock/RockDevTools/compare/v1.4.2...v1.5.0) (2025-07-02)
-
-
-### Features
-
-* add hookable method to disable livereload via callback ([4e645b3](https://github.com/baumrock/RockDevTools/commit/4e645b36a2e37fd6c5e6eb03080a56184112bde5))
-* add sourceMap feature ([e4cf325](https://github.com/baumrock/RockDevTools/commit/e4cf3255b1725eb90ed1bd5dab0d105ddc121a82))
 
