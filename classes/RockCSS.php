@@ -26,6 +26,9 @@ class RockCSS extends Wire
    */
   public function compile(string $css): string
   {
+    // RockFrontend less files still use rfGrow/rfShrink (postCSS names).
+    // Normalize to RockDevTools grow/shrink so boxed layout padding compiles.
+    $css = str_replace(['rfGrow(', 'rfShrink('], ['grow(', 'shrink('], $css);
     $css = $this->compileGrow($css);
     $css = $this->compileShrink($css);
     $css = $this->pxREM($css); // after grow + shrink!
